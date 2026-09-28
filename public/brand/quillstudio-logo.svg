@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 240" role="img" aria-labelledby="title desc">
+  <title id="title">QuillStudio</title>
+  <desc id="desc">QuillStudio logo with a colorful feather inside a rounded square</desc>
+  <defs>
+    <linearGradient id="feather" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#3157a7"/>
+      <stop offset="0.45" stop-color="#ec1977"/>
+      <stop offset="1" stop-color="#ffc02e"/>
+    </linearGradient>
+  </defs>
+  <path d="M121 31h103v9h-94c-13 0-23 10-23 23v119c0 13 10 23 23 23h95c13 0 23-10 23-23v-83h9v83c0 18-14 32-32 32h-95c-18 0-32-14-32-32V63c0-18 14-32 32-32Z" fill="#123b52"/>
+  <path d="M122 164c20-35 31-76 96-125-6 47-25 78-57 100 22-7 38-19 51-35-4 26-35 47-64 61-12 6-22 11-28 18-5 6-13 7-17 2-5-5-2-13 2-21 5-9 11-15 17-20Z" fill="url(#feather)"/>
+  <path d="M115 181c19-24 46-39 75-61" fill="none" stroke="#ff6b36" stroke-width="3" stroke-linecap="round" opacity=".75"/>
+  <text x="247" y="146" fill="#123b52" font-family="Arial, Helvetica, sans-serif" font-size="63" font-weight="700" letter-spacing="-3">QuillStudio</text>
+</svg>

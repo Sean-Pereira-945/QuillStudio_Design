@@ -1,0 +1,312 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --paper: #fbfaf7;
+  --pearl: #f3f1ec;
+  --mist: #ffffff;
+  --ink: #16202e;
+  --slate: #5b6577;
+  --rose: #c92a63;
+  --amber: #dd8b1f;
+  --violet: #6d4fc4;
+  --line: #e4e0d7;
+
+  color-scheme: light;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: env(safe-area-inset-top, 0px);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+}
+
+::selection {
+  background: rgba(201, 42, 99, 0.18);
+  color: var(--ink);
+}
+
+/* Visible keyboard focus everywhere. */
+:focus-visible {
+  outline: 2px solid var(--rose);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+.skip-link {
+  position: fixed;
+  left: 12px;
+  top: calc(env(safe-area-inset-top, 0px) + 12px);
+  z-index: 200;
+  transform: translateY(-160%);
+  background: var(--ink);
+  color: var(--paper);
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-weight: 500;
+}
+.skip-link:focus {
+  transform: none;
+}
+
+/* ---------- Type ---------- */
+.display {
+  font-family: "Fraunces", Georgia, Cambria, "Times New Roman", serif;
+  font-optical-sizing: auto;
+  font-variation-settings: "SOFT" 50, "WONK" 0;
+  letter-spacing: -0.02em;
+  line-height: 1.02;
+}
+
+.data-label {
+  font-family: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Glossy shine text: dark ink metallic sheen. The lightest stop (#4a5870) stays above 4.5:1 on paper. */
+.shine-ink {
+  background-image: linear-gradient(
+    100deg,
+    #16202e 0%,
+    #16202e 38%,
+    #4a5870 48%,
+    #2a3547 52%,
+    #16202e 62%,
+    #16202e 100%
+  );
+  background-size: 250% 100%;
+  background-position: 100% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: var(--ink);
+  animation: shine 7s ease-in-out infinite;
+}
+
+/* Rose to amber shine, for large display text only. Deepened amber keeps 3:1 or better on paper. */
+.shine-rose {
+  background-image: linear-gradient(
+    100deg,
+    #a51f50 0%,
+    #c92a63 30%,
+    #d4466f 45%,
+    #b0500f 60%,
+    #9a5a0c 80%,
+    #a51f50 100%
+  );
+  background-size: 250% 100%;
+  background-position: 100% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: var(--rose);
+  animation: shine 7s ease-in-out infinite;
+}
+
+@keyframes shine {
+  0% {
+    background-position: 100% 0;
+  }
+  55%,
+  100% {
+    background-position: 0% 0;
+  }
+}
+
+/* ---------- Scene stack ---------- */
+.scene-anchor {
+  height: 0;
+}
+
+.scene {
+  position: relative;
+  background: var(--scene-bg, var(--paper));
+}
+
+.scene-inner {
+  transform-origin: 50% 0%;
+}
+
+[data-stack="on"] .scene {
+  position: sticky;
+  top: var(--stick-top, 0px);
+  min-height: 100vh;
+  min-height: 100svh;
+  border-radius: 28px 28px 0 0;
+  box-shadow: 0 -24px 60px -30px rgba(22, 32, 46, 0.22);
+}
+[data-stack="on"] .scene[data-first] {
+  border-radius: 0;
+  box-shadow: none;
+}
+[data-stack="on"] .scene-inner {
+  will-change: transform, opacity;
+}
+
+/* ---------- Ink smudge under the navbar ---------- */
+.smudge {
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: calc(env(safe-area-inset-top, 0px) + 104px);
+  z-index: 40;
+  pointer-events: none;
+}
+.smudge > div {
+  position: absolute;
+  inset: 0;
+}
+.smudge .s1 {
+  backdrop-filter: blur(1px);
+  -webkit-backdrop-filter: blur(1px);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 55%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 55%, transparent 100%);
+}
+.smudge .s2 {
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 40%, transparent 78%);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 40%, transparent 78%);
+}
+.smudge .s3 {
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 28%, transparent 60%);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 28%, transparent 60%);
+}
+.smudge .s4 {
+  backdrop-filter: blur(14px) saturate(1.2);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  mask-image: linear-gradient(to bottom, #000 0%, transparent 42%);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 42%);
+}
+.smudge .tint {
+  background: linear-gradient(to bottom, rgba(251, 250, 247, 0.7), rgba(251, 250, 247, 0) 72%);
+}
+
+/* ---------- Liquid glass navbar ---------- */
+.glass {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.6));
+  backdrop-filter: blur(18px) saturate(1.6);
+  -webkit-backdrop-filter: blur(18px) saturate(1.6);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    inset 0 -1px 0 rgba(22, 32, 46, 0.05),
+    0 0 0 1px rgba(22, 32, 46, 0.05),
+    0 12px 32px -12px rgba(22, 32, 46, 0.25);
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass {
+    background: rgba(255, 255, 255, 0.97);
+  }
+}
+
+/* Dropdown sits inside the blurred nav, where a nested backdrop blur can't reach the page,
+   so it relies on a near-opaque fill to keep the options readable. */
+.glass-menu {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.97), rgba(250, 248, 245, 0.94));
+  backdrop-filter: blur(40px) saturate(1.8);
+  -webkit-backdrop-filter: blur(40px) saturate(1.8);
+}
+
+/* ---------- Magnetic cursor ---------- */
+html.has-magnetic-cursor,
+html.has-magnetic-cursor body,
+html.has-magnetic-cursor a,
+html.has-magnetic-cursor button,
+html.has-magnetic-cursor [role="button"],
+html.has-magnetic-cursor label {
+  cursor: none;
+}
+/* Text fields always keep the system cursor, so selection and typing feel normal. */
+html.has-magnetic-cursor input,
+html.has-magnetic-cursor textarea {
+  cursor: text;
+}
+
+.mc-ring,
+.mc-dot {
+  position: fixed;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+html.has-magnetic-cursor .mc-ring,
+html.has-magnetic-cursor .mc-dot {
+  opacity: 1;
+}
+html.has-magnetic-cursor.mc-hidden .mc-ring,
+html.has-magnetic-cursor.mc-hidden .mc-dot {
+  opacity: 0;
+}
+.mc-ring {
+  border: 1.5px solid rgba(22, 32, 46, 0.45);
+  border-radius: 999px;
+  transition:
+    opacity 0.2s ease,
+    background-color 0.25s ease,
+    border-color 0.25s ease;
+}
+.mc-ring.is-active {
+  background-color: rgba(201, 42, 99, 0.06);
+  border-color: rgba(201, 42, 99, 0.6);
+}
+.mc-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--ink);
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .shine-ink,
+  .shine-rose {
+    animation: none;
+    background-position: 30% 0;
+  }
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
