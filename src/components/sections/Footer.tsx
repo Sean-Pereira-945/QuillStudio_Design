@@ -1,21 +1,23 @@
 import { BrandPill } from "@/components/layout/Logo";
 import { site } from "@/config/site";
 
-const columns = [
+type FooterLink = { label: string; href: string; external?: boolean };
+
+// Links render only when they lead somewhere real: no "#" placeholders, no duplicates of the enquiry form.
+const columns: { title: string; links: FooterLink[] }[] = [
   {
     title: "Product",
     links: [
-      { label: "Features", href: "#features" },
       { label: "How it works", href: "#how-it-works" },
-      { label: "Governance", href: "#benefits" },
-      { label: "Get it on AppExchange", href: site.appExchangeUrl, external: true },
+      { label: "Features", href: "#features" },
+      ...(site.appExchangeConfirmed ? [{ label: "Get it on AppExchange", href: site.appExchangeUrl, external: true }] : []),
     ],
   },
   {
-    title: "Support",
+    title: "Contact",
     links: [
       { label: "Book a demo", href: site.bookDemoUrl },
-      { label: "Contact", href: site.contactEmail ? `mailto:${site.contactEmail}` : "#enquiry" },
+      ...(site.contactEmail ? [{ label: "Email us", href: `mailto:${site.contactEmail}` }] : []),
     ],
   },
   {
@@ -24,9 +26,9 @@ const columns = [
       { label: "Privacy", href: site.privacyUrl },
       { label: "Terms", href: site.termsUrl },
       { label: "Cookies", href: site.cookiesUrl },
-    ],
+    ].filter((l) => l.href !== "#"),
   },
-];
+].filter((c) => c.links.length > 0);
 
 export function Footer() {
   return (
@@ -42,13 +44,13 @@ export function Footer() {
           {columns.map((c) => (
             <div key={c.title}>
               <h2 className="text-[0.9rem] font-semibold">{c.title}</h2>
-              <ul className="mt-3 space-y-2">
+              <ul className="mt-2">
                 {c.links.map((l) => (
                   <li key={l.label}>
                     <a
                       href={l.href}
-                      className="text-[0.92rem] text-slate hover:text-ink"
-                      {...("external" in l && l.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                      className="inline-block py-1.5 text-[0.92rem] text-slate hover:text-ink"
+                      {...(l.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                     >
                       {l.label}
                     </a>

@@ -18,7 +18,7 @@ import { usePrefersReducedMotion } from "@/lib/use-media";
  */
 
 const cardVariants = cva(
-  "group relative isolate flex h-full flex-col overflow-hidden rounded-[22px] border p-5 text-ink",
+  "group relative isolate flex h-full flex-col overflow-hidden rounded-[1.375rem] border p-5 text-ink",
   {
     variants: {
       variant: {

@@ -4,12 +4,12 @@ import { Reveal, RevealItem } from "@/components/ui/reveal";
 
 export function Capabilities() {
   return (
-    <div className="mx-auto max-w-[1200px] px-5 pb-16 pt-20 sm:px-8 lg:pt-24">
+    <div className="mx-auto max-w-[1200px] px-5 pb-12 pt-24 sm:px-8 lg:pb-6 lg:pt-[5.5rem]">
       <Reveal className="max-w-[720px]">
         <RevealItem>
           <h2 className="display text-[clamp(1.9rem,3.6vw,2.9rem)] font-medium">Each problem, answered inside Salesforce.</h2>
         </RevealItem>
-        <RevealItem>
+        <RevealItem delay={0.08}>
           <p className="mt-3 max-w-[56ch] text-[1.02rem] leading-relaxed text-slate">
             QuillStudio works on any standard or custom Salesforce object, so it fits the way your projects, units and
             bookings are already set up.
@@ -17,7 +17,7 @@ export function Capabilities() {
         </RevealItem>
       </Reveal>
 
-      <Reveal className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <Reveal className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         <RevealItem>
           <GradientCard
             variant="rose"
@@ -34,7 +34,7 @@ export function Capabilities() {
             }
           />
         </RevealItem>
-        <RevealItem>
+        <RevealItem delay={0.08}>
           <GradientCard
             variant="violet"
             badge="Merge logic"
@@ -44,7 +44,7 @@ export function Capabilities() {
             description="Loops for repeating rows, nested tables and related records. Conditions, images and QR codes, all inside the template."
           />
         </RevealItem>
-        <RevealItem>
+        <RevealItem delay={0.16}>
           <GradientCard
             variant="amber"
             badge="Approvals"
@@ -62,11 +62,9 @@ export function Capabilities() {
             title="Locked until approved"
             answers="The wrong version reaching the client."
             description="A PDF cannot be downloaded until it is Approved or Not Required. Enforced automatically."
-            href="#benefits"
-            linkLabel="See the lock in action"
           />
         </RevealItem>
-        <RevealItem>
+        <RevealItem delay={0.08}>
           <GradientCard
             variant="neutral"
             badge="Versions"
@@ -76,7 +74,7 @@ export function Capabilities() {
             description="Full version history. Every new upload comes with a plain-English summary of exactly what changed."
           />
         </RevealItem>
-        <RevealItem>
+        <RevealItem delay={0.16}>
           <GradientCard
             variant="amber"
             badge="Analytics"
@@ -84,8 +82,6 @@ export function Capabilities() {
             title="Proof of time saved"
             answers="Leadership asking whether the tool really saves time."
             description="A built-in dashboard shows time saved, approval status and which templates your teams use most."
-            href="#proof"
-            linkLabel="Preview the dashboard"
           />
         </RevealItem>
       </Reveal>

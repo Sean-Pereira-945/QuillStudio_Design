@@ -28,4 +28,14 @@ export const site = {
   },
 
   company: "Exceller Tech",
+
+  // TODO: proof shown under the hero. Leave empty and the strip does not render; never add placeholders.
+  // e.g. { label: "Used by", items: ["Developer A", "Developer B"] }
+  proof: { label: "", items: [] as string[] },
+
+  // TODO: how fast the team replies to an enquiry, e.g. "within one working day". Empty hides the promise.
+  replyTime: "",
+
+  // TODO: indicative pricing, e.g. "From ₹X per user per month". Empty keeps the "tell us your seats" line.
+  pricingFrom: "",
 } as const;

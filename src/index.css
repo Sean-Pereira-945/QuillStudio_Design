@@ -3,15 +3,15 @@
 @tailwind utilities;
 
 :root {
-  --paper: #fbfaf7;
-  --pearl: #f3f1ec;
+  --paper: #faf9f5;
+  --pearl: #f0eee6;
   --mist: #ffffff;
   --ink: #16202e;
   --slate: #5b6577;
   --rose: #c92a63;
   --amber: #dd8b1f;
   --violet: #6d4fc4;
-  --line: #e4e0d7;
+  --line: #e8e6dc;
 
   color-scheme: light;
   box-sizing: border-box;
@@ -29,6 +29,16 @@ html {
   scroll-behavior: smooth;
   scroll-padding-top: env(safe-area-inset-top, 0px);
   -webkit-text-size-adjust: 100%;
+}
+
+/* Desktop: every size is in rem, so scaling the root with the viewport height keeps each
+   section on one screen. 49 is the tallest section (How it works, 48rem) plus headroom.
+   Capped at the browser default so large screens are unchanged, and floored at 13px so text
+   stays readable: below about 640px of viewport height sections grow and scroll instead. */
+@media (min-width: 1024px) {
+  html {
+    font-size: clamp(81.25%, 100vh / 49, 100%);
+  }
 }
 
 body {
@@ -111,7 +121,7 @@ canvas {
   background-clip: text;
   -webkit-text-fill-color: transparent;
   color: var(--ink);
-  animation: shine 7s ease-in-out infinite;
+  animation: shine 3.2s cubic-bezier(0.22, 1, 0.36, 1) 0.6s 1 both;
 }
 
 /* Rose to amber shine, for large display text only. Deepened amber keeps 3:1 or better on paper. */
@@ -131,7 +141,7 @@ canvas {
   background-clip: text;
   -webkit-text-fill-color: transparent;
   color: var(--rose);
-  animation: shine 7s ease-in-out infinite;
+  animation: shine 3.2s cubic-bezier(0.22, 1, 0.36, 1) 0.6s 1 both;
 }
 
 @keyframes shine {
@@ -144,6 +154,16 @@ canvas {
   }
 }
 
+/* ---------- How it works: same type as quillstudio.tech ---------- */
+.qs-how {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+.qs-how .qs-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
 /* ---------- Scene stack ---------- */
 .scene-anchor {
   height: 0;
@@ -154,24 +174,17 @@ canvas {
   background: var(--scene-bg, var(--paper));
 }
 
-.scene-inner {
-  transform-origin: 50% 0%;
-}
-
-[data-stack="on"] .scene {
-  position: sticky;
-  top: var(--stick-top, 0px);
-  min-height: 100vh;
-  min-height: 100svh;
-  border-radius: 28px 28px 0 0;
-  box-shadow: 0 -24px 60px -30px rgba(22, 32, 46, 0.22);
-}
-[data-stack="on"] .scene[data-first] {
-  border-radius: 0;
-  box-shadow: none;
-}
-[data-stack="on"] .scene-inner {
-  will-change: transform, opacity;
+/* Desktop: one section per screen, content centred vertically. */
+@media (min-width: 1024px) {
+  .scene-inner {
+    display: flex;
+    min-height: 100svh;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .scene-inner > * {
+    width: 100%;
+  }
 }
 
 /* ---------- Ink smudge under the navbar ---------- */
@@ -211,7 +224,20 @@ canvas {
   -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 42%);
 }
 .smudge .tint {
-  background: linear-gradient(to bottom, rgba(251, 250, 247, 0.7), rgba(251, 250, 247, 0) 72%);
+  background: linear-gradient(to bottom, rgba(250, 249, 245, 0.7), rgba(250, 249, 245, 0) 72%);
+}
+
+/* Touch devices and small screens: stacked live blurs make scrolling stutter, so keep one light blur and the tint. */
+@media (max-width: 767px), (pointer: coarse) {
+  .smudge .s1,
+  .smudge .s2,
+  .smudge .s3 {
+    display: none;
+  }
+  .smudge .s4 {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
 }
 
 /* ---------- Liquid glass navbar ---------- */
@@ -225,6 +251,15 @@ canvas {
     inset 0 -1px 0 rgba(22, 32, 46, 0.05),
     0 0 0 1px rgba(22, 32, 46, 0.05),
     0 12px 32px -12px rgba(22, 32, 46, 0.25);
+}
+/* Off the top of the page the bar firms up so it reads over any section. */
+.glass.is-scrolled {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(255, 255, 255, 0.84));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    inset 0 -1px 0 rgba(22, 32, 46, 0.05),
+    0 0 0 1px rgba(22, 32, 46, 0.07),
+    0 16px 40px -14px rgba(22, 32, 46, 0.32);
 }
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   .glass {
@@ -240,20 +275,91 @@ canvas {
   -webkit-backdrop-filter: blur(40px) saturate(1.8);
 }
 
+/* ---------- Glass button (after @jahed's Glass Button on 21st.dev) ---------- */
+.glass-btn {
+  isolation: isolate;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.72) 0%, rgba(255, 255, 255, 0.34) 100%);
+  backdrop-filter: blur(10px) saturate(1.5);
+  -webkit-backdrop-filter: blur(10px) saturate(1.5);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 1),
+    inset 0 -3px 6px rgba(22, 32, 46, 0.07),
+    inset 0 0 0 1px rgba(22, 32, 46, 0.05),
+    0 1px 2px rgba(22, 32, 46, 0.1),
+    0 10px 24px -10px rgba(22, 32, 46, 0.32);
+  transition:
+    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.25s ease,
+    background 0.25s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+/* The bright curved reflection across the top half. */
+.glass-btn::before {
+  content: "";
+  position: absolute;
+  inset: 1px 8% 50% 8%;
+  border-radius: 999px 999px 40% 40%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0));
+  opacity: 0.75;
+  pointer-events: none;
+  z-index: 0;
+}
+.glass-btn:hover {
+  transform: translateY(-1px);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.45) 100%);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 1),
+    inset 0 -3px 6px rgba(22, 32, 46, 0.07),
+    inset 0 0 0 1px rgba(22, 32, 46, 0.06),
+    0 2px 4px rgba(22, 32, 46, 0.1),
+    0 16px 32px -12px rgba(22, 32, 46, 0.38);
+}
+.glass-btn:active {
+  transform: translateY(0) scale(0.98);
+  box-shadow:
+    inset 0 2px 5px rgba(22, 32, 46, 0.12),
+    inset 0 0 0 1px rgba(22, 32, 46, 0.07),
+    0 1px 2px rgba(22, 32, 46, 0.12);
+}
+/* Primary: the same glass, tinted ink, for the one main action on each screen. */
+.glass-btn.is-primary {
+  color: #fff;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.25);
+  background: linear-gradient(180deg, rgba(40, 52, 70, 0.94) 0%, rgba(22, 32, 46, 0.96) 100%);
+  border-color: rgba(22, 32, 46, 0.9);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.28),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.25),
+    0 2px 4px rgba(22, 32, 46, 0.18),
+    0 12px 24px -12px rgba(22, 32, 46, 0.55);
+}
+.glass-btn.is-primary::before {
+  inset: 1px 4% 55% 4%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0));
+  opacity: 1;
+}
+.glass-btn.is-primary:hover {
+  background: linear-gradient(180deg, rgba(52, 66, 88, 0.95) 0%, rgba(28, 40, 58, 0.97) 100%);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.3),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.25),
+    0 3px 6px rgba(22, 32, 46, 0.2),
+    0 18px 30px -12px rgba(22, 32, 46, 0.6);
+}
+.glass-btn.is-primary:focus-visible {
+  outline-color: var(--rose);
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass-btn {
+    background: linear-gradient(180deg, #ffffff, #f1f0ec);
+  }
+}
+
 /* ---------- Magnetic cursor ---------- */
-html.has-magnetic-cursor,
-html.has-magnetic-cursor body,
-html.has-magnetic-cursor a,
-html.has-magnetic-cursor button,
-html.has-magnetic-cursor [role="button"],
-html.has-magnetic-cursor label {
-  cursor: none;
-}
-/* Text fields always keep the system cursor, so selection and typing feel normal. */
-html.has-magnetic-cursor input,
-html.has-magnetic-cursor textarea {
-  cursor: text;
-}
+/* The system cursor stays visible; the ring trails it as an accent, so pointing never feels unfamiliar. */
 
 .mc-ring,
 .mc-dot {
@@ -285,11 +391,9 @@ html.has-magnetic-cursor.mc-hidden .mc-dot {
   background-color: rgba(201, 42, 99, 0.06);
   border-color: rgba(201, 42, 99, 0.6);
 }
+/* The system cursor marks the exact point now, so the centre dot is not drawn. */
 .mc-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 999px;
-  background: var(--ink);
+  display: none;
 }
 
 /* ---------- Reduced motion ---------- */

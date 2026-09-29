@@ -1,30 +1,44 @@
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { QuillStudioLogo } from "./Logo";
-import { LiquidMetalButton } from "@/components/ui/liquid-metal-button";
+import { GlassButton } from "@/components/ui/glass-button";
 import { site } from "@/config/site";
 import { cn } from "@/lib/utils";
 
 const links = [
+  // Same order as the sections on the page.
   { href: "#problem", label: "The problem" },
-  { href: "#features", label: "Features" },
   { href: "#how-it-works", label: "How it works" },
-  { href: "#benefits", label: "Benefits" },
+  { href: "#features", label: "Features" },
   { href: "#pricing", label: "Pricing" },
 ];
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState<string>("");
+  const [scrolled, setScrolled] = useState(false);
+
+  // Always on screen; turns more solid once the page leaves the top.
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   // Highlight the scene currently in view.
   useEffect(() => {
     const ids = links.map((l) => l.href.slice(1));
     const onScroll = () => {
+      // The section whose top most recently passed the 40% line, by page position, not link order.
       let current = "";
+      let best = -Infinity;
       for (const id of ids) {
-        const el = document.getElementById(id);
-        if (el && el.getBoundingClientRect().top <= window.innerHeight * 0.4) current = id;
+        const top = document.getElementById(id)?.getBoundingClientRect().top;
+        if (top !== undefined && top <= window.innerHeight * 0.4 && top > best) {
+          best = top;
+          current = id;
+        }
       }
       setActive(current);
     };
@@ -41,10 +55,16 @@ export function Navbar() {
   }, [open]);
 
   return (
-    <header className="fixed inset-x-0 z-50 flex justify-center px-2 sm:px-3" style={{ top: "calc(env(safe-area-inset-top, 0px) + 14px)" }}>
-      <nav aria-label="Main" className="glass relative flex min-w-0 w-full max-w-[980px] items-center gap-1 rounded-full py-1.5 pl-3 pr-1 sm:gap-2 sm:py-2 sm:pl-5 sm:pr-2">
+    <header className="fixed inset-x-0 z-50 flex justify-center px-5 sm:px-8" style={{ top: "calc(env(safe-area-inset-top, 0px) + 14px)" }}>
+      <nav
+        aria-label="Main"
+        className={cn(
+          "glass relative flex min-w-0 w-full max-w-[1232px] items-center gap-1 rounded-full py-1.5 pl-3 pr-1 transition-[background,box-shadow] duration-300 sm:gap-2 sm:py-2 sm:pl-5 sm:pr-2",
+          scrolled && "is-scrolled",
+        )}
+      >
         <a href="#top" className="mr-auto flex min-w-0 items-center rounded-full py-1" aria-label="QuillStudio, back to top" data-magnetic>
-          <QuillStudioLogo className="h-8 max-w-[116px] sm:h-9 sm:max-w-none" />
+          <QuillStudioLogo className="h-8 max-w-[7.25rem] sm:h-9 sm:max-w-none" />
         </a>
 
         <ul className="hidden items-center gap-0.5 lg:flex">
@@ -65,7 +85,7 @@ export function Navbar() {
           ))}
         </ul>
 
-        <LiquidMetalButton label="Book a demo" href={site.bookDemoUrl} className="ml-1 hidden h-11 sm:inline-flex" />
+        <GlassButton label="Book a demo" href={site.bookDemoUrl} variant="primary" size="sm" className="ml-1 sm:h-11 sm:px-6 sm:text-[0.95rem]" />
 
         <button
           type="button"

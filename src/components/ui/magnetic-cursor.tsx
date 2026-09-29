@@ -14,8 +14,7 @@ import { useFinePointer, usePrefersReducedMotion } from "@/lib/use-media";
  *
  * Site rules (requirements 7.5 and 11):
  *  - off on touch and coarse pointers, and with reduced motion
- *  - the system cursor is hidden only after the effect has started working,
- *    so if anything fails the normal cursor stays
+ *  - the system cursor always stays visible; the ring trails it (see index.css)
  *  - never intercepts clicks (pointer-events: none) and text fields keep their cursor
  *  - keyboard focus rings are untouched
  */
