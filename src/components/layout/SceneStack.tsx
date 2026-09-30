@@ -19,7 +19,7 @@ type SceneProps = {
   className?: string;
 };
 
-const tones = { paper: "#faf9f5", pearl: "#f0eee6", mist: "#ffffff" };
+const tones = { paper: "#ffffff", pearl: "#f0eee6", mist: "#ffffff" };
 
 export function Scene({ id, label, children, tone = "paper", className }: SceneProps) {
   return (

@@ -98,7 +98,7 @@ export function Cta() {
                   <GlassButton
                     label="Book a demo"
                     size="lg"
-                    variant="primary"
+                    variant="warm"
                     href={site.bookDemoUrl}
                     icon={<CalendarCheck className="h-4 w-4" aria-hidden="true" />}
                   />
@@ -188,7 +188,7 @@ export function Cta() {
                   label={state === "sending" ? "Sending…" : "Send enquiry"}
                   type="submit"
                   width="wide"
-                  variant="primary"
+                  variant="warm"
                   disabled={state === "sending"}
                 />
               </div>

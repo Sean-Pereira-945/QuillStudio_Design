@@ -17,7 +17,7 @@ export function Hero() {
           still={reduced}
           config={{
             preset: "custom",
-            color1: "#faf9f5",
+            color1: "#ffffff",
             color2: "#f3b9cc",
             color3: "#f5d09b",
             rotation: -30,
@@ -33,7 +33,7 @@ export function Hero() {
             shapeSize: 30,
           }}
           noise={{ opacity: 0.25, scale: 1 }}
-          fallback="radial-gradient(60% 60% at 80% 20%, #f6c9d7, transparent), radial-gradient(50% 50% at 90% 90%, #f7dcb3, transparent), #faf9f5"
+          fallback="radial-gradient(60% 60% at 80% 20%, #f6c9d7, transparent), radial-gradient(50% 50% at 90% 90%, #f7dcb3, transparent), #ffffff"
           style={{ zIndex: -2 }}
         />
       </Suspense>
@@ -43,7 +43,7 @@ export function Hero() {
         className="pointer-events-none absolute inset-0 -z-[1]"
         style={{
           background:
-            "radial-gradient(40% 35% at 78% 72%, rgba(109,79,196,0.14), transparent 70%), linear-gradient(90deg, rgba(250,249,246,0.94) 0%, rgba(250,249,246,0.78) 42%, rgba(250,249,246,0.15) 75%, rgba(250,249,246,0) 100%)",
+            "radial-gradient(40% 35% at 78% 72%, rgba(109,79,196,0.14), transparent 70%), linear-gradient(90deg, rgba(255,255,255,0.94) 0%, rgba(255,255,255,0.78) 42%, rgba(255,255,255,0.15) 75%, rgba(255,255,255,0) 100%)",
         }}
       />
       <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 -z-[1] h-40 bg-gradient-to-b from-transparent to-paper" />
@@ -60,7 +60,7 @@ export function Hero() {
           </RevealItem>
           <RevealItem delay={0.16}>
             <div className="mt-9 flex flex-wrap items-center gap-3">
-              <GlassButton label="Book a demo" size="lg" variant="primary" href={site.bookDemoUrl} />
+              <GlassButton label="Book a demo" size="lg" variant="warm" href={site.bookDemoUrl} />
               <GlassButton
                 label="See how it works"
                 size="lg"

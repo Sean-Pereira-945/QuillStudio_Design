@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
  *
  *  - `href` renders an <a>, otherwise a <button>
  *  - `width`: "auto" grows with the label, "wide" fills its container
- *  - `variant`: "primary" tints the glass ink for the one main action on a screen
+ *  - `variant`: "primary" tints the glass ink for the one main action on a screen, "warm" is the peach-mauve pill for Book a demo and Send enquiry
  *  - no WebGL, so it costs nothing on phones
  */
 
@@ -19,7 +19,7 @@ type Props = {
   icon?: ReactNode;
   width?: "auto" | "wide";
   size?: "sm" | "md" | "lg";
-  variant?: "primary" | "secondary";
+  variant?: "primary" | "warm" | "secondary";
   type?: "button" | "submit";
   ariaLabel?: string;
   className?: string;
@@ -45,7 +45,7 @@ export function GlassButton({
     className: cn(
       "glass-btn relative inline-flex shrink-0 select-none items-center justify-center gap-2 rounded-full font-medium tracking-[0.01em] disabled:opacity-60",
       size === "lg" ? "h-14 px-7 text-[1.02rem]" : size === "sm" ? "h-10 px-4 text-[0.88rem]" : "h-12 px-6 text-[0.95rem]",
-      variant === "primary" ? "is-primary" : "text-ink",
+      variant === "primary" ? "is-primary" : variant === "warm" ? "is-warm" : "text-ink",
       width === "wide" ? "w-full" : "w-auto",
       className,
     ),

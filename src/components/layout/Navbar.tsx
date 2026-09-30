@@ -85,7 +85,7 @@ export function Navbar() {
           ))}
         </ul>
 
-        <GlassButton label="Book a demo" href={site.bookDemoUrl} variant="primary" size="sm" className="ml-1 sm:h-11 sm:px-6 sm:text-[0.95rem]" />
+        <GlassButton label="Book a demo" href={site.bookDemoUrl} variant="warm" size="sm" className="ml-1 sm:h-11 sm:px-6 sm:text-[0.95rem]" />
 
         <button
           type="button"

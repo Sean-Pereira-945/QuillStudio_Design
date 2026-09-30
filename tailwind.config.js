@@ -4,7 +4,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        paper: "#faf9f5",
+        paper: "#ffffff",
         pearl: "#f0eee6",
         mist: "#ffffff",
         ink: "#16202e",
