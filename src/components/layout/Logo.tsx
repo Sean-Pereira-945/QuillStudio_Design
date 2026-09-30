@@ -28,7 +28,7 @@ export function ExcellerTechLogo({ className }: { className?: string }) {
       <img
         src={site.logos.excellerTech}
         alt="Exceller Tech"
-        className={cn("h-6 w-auto", className)}
+        className={cn("h-9 w-auto object-contain", className)}
         onError={() => setFailed(true)}
       />
     );
