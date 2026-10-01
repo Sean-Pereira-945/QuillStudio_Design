@@ -59,23 +59,23 @@ export function Demo() {
   }, [stage, reduced]);
 
   return (
-    <div className="qs-how mx-auto max-w-[1200px] px-5 sm:px-8 pb-12 pt-24 lg:pb-4 lg:pt-[5.5rem]">
+    <div className="qs-how mx-auto max-w-[1200px] px-5 sm:px-8">
       <div className="text-center">
         <RevealItem>
-        <h2 className="mb-1 text-3xl font-bold leading-tight text-slate-900 sm:text-4xl lg:text-[2.4rem]">
+        <h2 className="display mb-1 text-[clamp(1.9rem,3.6vw,2.9rem)] font-medium text-ink">
           How QuillStudio
           {" "}
-          <span className="block bg-gradient-to-r from-orange-500 to-pink-500 bg-clip-text text-transparent lg:inline">Works</span>
+          <span className="shine-rose block lg:inline">Works</span>
         </h2>
         </RevealItem>
 
-        <div className="mx-auto mt-1 max-w-5xl">
+        <div className="mx-auto mt-1 max-w-4xl">
           <RevealItem delay={0.08}>
-          <p className="mb-4 text-slate-600">Watch how tags in your Word documents become real customer data in PDFs</p>
+          <p className="mb-3 text-slate">Watch how tags in your Word documents become real customer data in PDFs</p>
           </RevealItem>
 
           <RevealItem delay={0.16}>
-          <div ref={ref} className="relative rounded-2xl border border-slate-200/50 bg-white/80 p-4 shadow-2xl backdrop-blur-sm sm:px-8 sm:py-4">
+          <div ref={ref} className="relative rounded-2xl border border-line bg-white/90 p-4 shadow-[0_30px_60px_-30px_rgba(22,32,46,0.22)] backdrop-blur-sm sm:px-6 sm:py-3.5">
             {/* Stepper */}
             <div className="mb-3 flex items-center justify-center gap-1 sm:gap-2">
               {stages.map((s, i) => (
@@ -90,23 +90,23 @@ export function Demo() {
                       className={cn(
                         "flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold transition-all duration-500",
                         stage === i
-                          ? "scale-110 bg-gradient-to-r from-orange-500 to-pink-500 text-white shadow-md"
+                          ? "scale-110 bg-ink text-white shadow-md"
                           : i < stage
-                            ? "bg-orange-300 text-white"
-                            : "bg-slate-200 text-slate-500",
+                            ? "bg-[#fbd2b5] text-ink"
+                            : "bg-pearl text-slate",
                       )}
                     >
                       {i < stage ? <Check className="h-3.5 w-3.5" strokeWidth={3} aria-hidden="true" /> : i + 1}
                     </span>
-                    <span className={cn("hidden text-xs font-medium transition-colors duration-300 sm:inline", stage === i ? "text-orange-600" : "text-slate-400")}>
+                    <span className={cn("hidden text-xs font-medium transition-colors duration-300 sm:inline", stage === i ? "text-ink" : "text-slate")}>
                       {s.label}
                     </span>
-                    <span className={cn("text-[0.625rem] font-medium transition-colors duration-300 sm:hidden", stage === i ? "text-orange-600" : "text-slate-400")}>
+                    <span className={cn("text-[0.625rem] font-medium transition-colors duration-300 sm:hidden", stage === i ? "text-ink" : "text-slate")}>
                       {s.short}
                     </span>
                   </button>
                   {i < stages.length - 1 && (
-                    <div className={cn("h-0.5 w-6 transition-colors duration-500 sm:w-10", i < stage ? "bg-orange-300" : "bg-slate-200")} />
+                    <div className={cn("h-0.5 w-6 transition-colors duration-500 sm:w-10", i < stage ? "bg-[#f3c4a3]" : "bg-line")} />
                   )}
                 </div>
               ))}
@@ -116,7 +116,7 @@ export function Demo() {
             <div className="block lg:hidden">{stage === 2 ? <PdfDoc /> : <WordDoc />}</div>
 
             {/* Desktop: template, converter, PDF */}
-            <div className="hidden grid-cols-[1fr_8.5rem_1fr] items-center gap-4 lg:grid">
+            <div className="hidden grid-cols-[1fr_7rem_1fr] items-center gap-3 lg:grid">
               <div className={cn("transition-all duration-500", stage === 2 ? "scale-100 opacity-60" : "scale-100 opacity-100")}>
                 <WordDoc />
               </div>
@@ -124,8 +124,8 @@ export function Demo() {
                 <div className="flex flex-col items-center gap-3">
                   <div
                     className={cn(
-                      "flex h-16 w-16 items-center justify-center rounded-full text-white shadow-lg transition-all duration-500",
-                      stage === 2 ? "bg-gradient-to-r from-green-400 to-emerald-500" : "bg-gradient-to-r from-orange-400 to-pink-400",
+                      "flex h-16 w-16 items-center justify-center rounded-full shadow-[0_10px_24px_-10px_rgba(200,110,50,0.5)] transition-all duration-500",
+                      stage === 2 ? "bg-[#f6d5df] text-rose-deep" : "bg-[linear-gradient(180deg,#fde0cb,#fbd2b5)] text-ink",
                     )}
                   >
                     {stage === 0 && <ArrowRight className="h-7 w-7" aria-hidden="true" />}
@@ -135,9 +135,9 @@ export function Demo() {
                   <div
                     className={cn(
                       "rounded-full px-3 py-1 text-center text-[0.6875rem] font-semibold",
-                      stage === 0 && "bg-slate-100 text-slate-500",
-                      stage === 1 && "bg-orange-100 text-orange-600",
-                      stage === 2 && "bg-green-100 text-green-700",
+                      stage === 0 && "bg-pearl text-slate",
+                      stage === 1 && "bg-[#fdebd9] text-amber-deep",
+                      stage === 2 && "bg-[#f9e1e8] text-rose-deep",
                     )}
                   >
                     {stage === 0 ? ".docx → .pdf" : stage === 1 ? "converting..." : "done!"}
@@ -157,23 +157,23 @@ export function Demo() {
             </div>
 
             {/* Caption, progress or success */}
-            <div className="mt-3 min-h-[3.25rem] border-t border-slate-200 pt-3" aria-live="polite">
+            <div className="mt-3 min-h-[2.75rem] border-t border-line pt-3" aria-live="polite">
               {stage === 0 && (
-                <p className="text-center text-xs text-slate-500">
-                  <span className="qs-mono rounded bg-orange-100 px-1.5 py-0.5 text-[0.6875rem] text-orange-700">{"{{field tags}}"}</span> in your Word
+                <p className="text-center text-xs text-slate">
+                  <span className="qs-mono rounded bg-[#fdebd9] px-1.5 py-0.5 text-[0.6875rem] text-amber-deep">{"{{field tags}}"}</span> in your Word
                   template are automatically replaced with live Salesforce data and exported as a pixel-perfect PDF.
                 </p>
               )}
               {stage === 1 && (
                 <div>
-                  <p className="mb-2 text-center text-xs font-semibold uppercase tracking-wider text-slate-400">Conversion progress</p>
+                  <p className="mb-2 text-center text-xs font-semibold uppercase tracking-wider text-slate">Conversion progress</p>
                   <ul className="grid gap-2 text-left sm:grid-cols-2 lg:grid-cols-4">
                     {progressItems.map((item, i) => (
                       <li
                         key={item}
-                        className={cn("flex items-center gap-2 text-xs transition-all duration-300", i < done ? "text-slate-700 opacity-100" : "text-slate-400 opacity-40")}
+                        className={cn("flex items-center gap-2 text-xs transition-all duration-300", i < done ? "text-ink opacity-100" : "text-slate opacity-40")}
                       >
-                        <span className={cn("flex h-4 w-4 shrink-0 items-center justify-center rounded-full", i < done ? "bg-green-100 text-green-600" : "bg-slate-100 text-slate-400")}>
+                        <span className={cn("flex h-4 w-4 shrink-0 items-center justify-center rounded-full", i < done ? "bg-[#fde0cb] text-amber-deep" : "bg-pearl text-slate")}>
                           <Check className="h-2.5 w-2.5" strokeWidth={3} aria-hidden="true" />
                         </span>
                         {item}
@@ -183,34 +183,16 @@ export function Demo() {
                 </div>
               )}
               {stage === 2 && (
-                <div className="flex flex-col items-center gap-1 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-center">
+                <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 rounded-xl border border-[#f1d3bd] bg-[#fdf4ec] px-4 py-2 text-center">
                   <div className="flex items-center gap-2">
-                    <CircleCheck className="h-4 w-4 text-green-600" aria-hidden="true" />
-                    <p className="text-sm font-semibold text-green-800">PDF generated successfully!</p>
+                    <CircleCheck className="h-4 w-4 text-rose" aria-hidden="true" />
+                    <p className="text-sm font-semibold text-ink">PDF generated successfully!</p>
                   </div>
-                  <p className="text-xs text-green-600">Salesforce data merged · Tables preserved · Formatting intact · Ready to send</p>
+                  <p className="text-xs text-slate">Salesforce data merged · Tables preserved · Formatting intact · Ready to send</p>
                 </div>
               )}
             </div>
 
-            {/* Dots */}
-            <div className="mt-2 text-center">
-              <div className="inline-flex items-center space-x-2">
-                {stages.map((s, i) => (
-                  <button
-                    key={s.label}
-                    type="button"
-                    onClick={() => setStage(i)}
-                    aria-label={`Show step ${i + 1}: ${s.label}`}
-                    className={cn(
-                      "h-2.5 w-2.5 rounded-full transition-all duration-300 hover:scale-125",
-                      stage === i ? "scale-125 bg-gradient-to-r from-orange-500 to-pink-500" : "bg-slate-300 hover:bg-slate-400",
-                    )}
-                  />
-                ))}
-              </div>
-              <p className="mt-1.5 text-xs text-slate-400">Click dots to navigate · Auto-plays on loop</p>
-            </div>
           </div>
           </RevealItem>
         </div>
@@ -221,28 +203,20 @@ export function Demo() {
 }
 
 function Tag({ children }: { children: ReactNode }) {
-  return <span className="qs-mono rounded border border-orange-200 bg-orange-100 px-1 text-[0.625rem] font-semibold text-orange-700">{children}</span>;
+  return <span className="qs-mono rounded border border-[#f5d3b8] bg-[#fdebd9] px-1 text-[0.625rem] font-semibold text-amber-deep">{children}</span>;
 }
 
 function WordDoc() {
   return (
-    <div className="overflow-hidden rounded-xl border-2 border-blue-300 bg-white shadow-md">
-      <div className="flex items-center gap-2 bg-blue-600 px-3 py-2">
+    <div className="overflow-hidden rounded-xl border border-line bg-white shadow-[0_12px_28px_-16px_rgba(22,32,46,0.25)]">
+      <div className="flex items-center gap-2 bg-[#fde9da] px-3 py-1.5">
         <div className="flex h-4 w-4 items-center justify-center rounded bg-white">
-          <span className="text-[0.5625rem] font-bold text-blue-600">W</span>
+          <span className="text-[0.5625rem] font-bold text-amber-deep">W</span>
         </div>
-        <span className="text-xs font-medium text-white">invoice_template.docx</span>
+        <span className="text-xs font-medium text-ink">invoice_template.docx</span>
       </div>
-      <div className="flex items-center gap-1.5 border-b border-blue-100 bg-blue-50 px-3 py-1" aria-hidden="true">
-        {["B", "I", "U"].map((b) => (
-          <span key={b} className="rounded border border-blue-200 px-1 text-[0.625rem] font-bold text-blue-400">
-            {b}
-          </span>
-        ))}
-        <span className="ml-1 text-[0.625rem] text-blue-300">| Calibri · 11pt</span>
-      </div>
-      <div className="qs-mono space-y-2 bg-white p-3 text-xs">
-        <div className="border-b border-slate-200 pb-2 text-center text-base font-bold tracking-wide text-slate-800">INVOICE</div>
+      <div className="qs-mono space-y-1.5 bg-white p-2.5 text-xs">
+        <div className="border-b border-slate-200 pb-1.5 text-center text-sm font-bold tracking-wide text-slate-800">INVOICE</div>
         <div className="flex justify-between text-[0.625rem]">
           <div>
             <div className="font-bold text-slate-700">Acme Corp</div>
@@ -260,7 +234,7 @@ function WordDoc() {
             </div>
           </div>
         </div>
-        <div className="rounded border border-slate-200 bg-slate-50 p-2 text-[0.625rem]">
+        <div className="rounded border border-slate-200 bg-slate-50 px-2 py-1.5 text-[0.625rem]">
           <span className="font-bold text-slate-600">Bill To: </span>
           <Tag>{"{{Contact.Name}}"}</Tag>
           <span className="text-slate-400">, </span>
@@ -276,7 +250,7 @@ function WordDoc() {
             <col style={{ width: "32%" }} />
           </colgroup>
           <thead>
-            <tr className="bg-blue-600 text-white">
+            <tr className="bg-[#fbe3d1] text-ink">
               <th className="px-2 py-1 text-left font-semibold">Description</th>
               <th className="px-2 py-1 text-center font-semibold">Qty</th>
               <th className="px-2 py-1 text-right font-semibold">Amount</th>
@@ -321,20 +295,16 @@ function WordDoc() {
 function PdfDoc() {
   const v = "font-semibold text-slate-800";
   return (
-    <div className="overflow-hidden rounded-xl border-2 border-red-300 bg-white shadow-md">
-      <div className="flex items-center gap-2 bg-red-600 px-3 py-2">
+    <div className="overflow-hidden rounded-xl border border-line bg-white shadow-[0_12px_28px_-16px_rgba(22,32,46,0.25)]">
+      <div className="flex items-center gap-2 bg-[#f9e1e8] px-3 py-1.5">
         <div className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded bg-white">
-          <span className="text-[0.4375rem] font-black leading-none tracking-tight text-red-600">PDF</span>
+          <span className="text-[0.4375rem] font-black leading-none tracking-tight text-rose-deep">PDF</span>
         </div>
-        <span className="truncate text-xs font-medium text-white">invoice_INV-2025-0042.pdf</span>
-        <span className="ml-auto shrink-0 text-[0.625rem] text-red-200">🔒 Read-only</span>
+        <span className="truncate text-xs font-medium text-ink">invoice_INV-2025-0042.pdf</span>
+        <span className="ml-auto shrink-0 text-[0.625rem] text-slate">🔒 Read-only</span>
       </div>
-      <div className="flex items-center border-b border-red-100 bg-red-50 px-3 py-1">
-        <span className="text-[0.625rem] text-red-300">Page 1 of 1</span>
-        <span className="ml-auto text-[0.625rem] text-red-400">100%</span>
-      </div>
-      <div className="qs-mono space-y-2 bg-gray-50 p-3 text-xs">
-        <div className="border-b border-slate-300 pb-2 text-center text-base font-bold tracking-wide text-slate-800">INVOICE</div>
+      <div className="qs-mono space-y-1.5 bg-[#fcfbf8] p-2.5 text-xs">
+        <div className="border-b border-slate-300 pb-1.5 text-center text-sm font-bold tracking-wide text-slate-800">INVOICE</div>
         <div className="flex justify-between text-[0.625rem]">
           <div>
             <div className="font-bold text-slate-700">Acme Corp</div>
@@ -352,7 +322,7 @@ function PdfDoc() {
             </div>
           </div>
         </div>
-        <div className="rounded border border-slate-200 bg-white p-2 text-[0.625rem]">
+        <div className="rounded border border-slate-200 bg-white px-2 py-1.5 text-[0.625rem]">
           <span className="font-bold text-slate-600">Bill To: </span>
           <span className={v}>John Smith</span>
           <span className="text-slate-400">, </span>
@@ -368,7 +338,7 @@ function PdfDoc() {
             <col style={{ width: "32%" }} />
           </colgroup>
           <thead>
-            <tr className="bg-slate-700 text-white">
+            <tr className="bg-[#f6dbe3] text-ink">
               <th className="px-2 py-1 text-left font-semibold">Description</th>
               <th className="px-2 py-1 text-center font-semibold">Qty</th>
               <th className="px-2 py-1 text-right font-semibold">Amount</th>

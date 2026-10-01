@@ -6,6 +6,7 @@ import { Hero } from "@/components/sections/Hero";
 import { Problem } from "@/components/sections/Problem";
 import { Demo } from "@/components/sections/Demo";
 import { Capabilities } from "@/components/sections/Capabilities";
+import { Pricing } from "@/components/sections/Pricing";
 import { Cta } from "@/components/sections/Cta";
 import { Footer } from "@/components/sections/Footer";
 import { useSmoothScroll } from "@/lib/use-smooth-scroll";
@@ -20,19 +21,22 @@ export default function App() {
       <SmudgeLayer />
       <main id="main">
         <SceneStack>
-          <Scene id="top" label="Introduction">
+          <Scene id="top" label="Introduction" flush>
             <Hero />
           </Scene>
           <Scene id="problem" label="The problem" tone="paper">
             <Problem />
           </Scene>
-          <Scene id="how-it-works" label="How it works" tone="paper">
+          <Scene id="how-it-works" label="How it works" tone="cream">
             <Demo />
           </Scene>
           <Scene id="features" label="Features" tone="paper">
             <Capabilities />
           </Scene>
-          <Scene id="pricing" label="Book a demo and pricing" tone="paper">
+          <Scene id="pricing" label="Pricing" tone="cream">
+            <Pricing />
+          </Scene>
+          <Scene id="early-access" label="Get early access" tone="paper">
             <Cta />
           </Scene>
         </SceneStack>

@@ -11,15 +11,15 @@ const AnimatedGradient = lazy(() => import("@/components/ui/animated-gradient"))
 export function Hero() {
   const reduced = usePrefersReducedMotion();
   return (
-    <div className="relative isolate flex min-h-[100svh] items-center overflow-hidden">
+    <div className="relative isolate flex min-h-[100svh] items-center overflow-hidden bg-[#faf6ef]">
       <Suspense fallback={null}>
         <AnimatedGradient
           still={reduced}
           config={{
             preset: "custom",
-            color1: "#ffffff",
-            color2: "#f3b9cc",
-            color3: "#f5d09b",
+            color1: "#faf6ef",
+            color2: "#f2a9c0",
+            color3: "#f6c48a",
             rotation: -30,
             proportion: 45,
             scale: 0.45,
@@ -33,25 +33,26 @@ export function Hero() {
             shapeSize: 30,
           }}
           noise={{ opacity: 0.25, scale: 1 }}
-          fallback="radial-gradient(60% 60% at 80% 20%, #f6c9d7, transparent), radial-gradient(50% 50% at 90% 90%, #f7dcb3, transparent), #ffffff"
+          fallback="radial-gradient(60% 60% at 80% 20%, #f4bccd, transparent), radial-gradient(50% 50% at 90% 90%, #f7d3a6, transparent), #faf6ef"
           style={{ zIndex: -2 }}
         />
       </Suspense>
-      {/* A soft violet bloom and a paper veil keep the headline side calm and legible. */}
+      {/* A soft violet bloom and a light off-white veil keep the headline side calm and legible without washing out the waves. */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 -z-[1]"
         style={{
           background:
-            "radial-gradient(40% 35% at 78% 72%, rgba(109,79,196,0.14), transparent 70%), linear-gradient(90deg, rgba(255,255,255,0.94) 0%, rgba(255,255,255,0.78) 42%, rgba(255,255,255,0.15) 75%, rgba(255,255,255,0) 100%)",
+            "radial-gradient(40% 35% at 78% 72%, rgba(109,79,196,0.14), transparent 70%), linear-gradient(90deg, rgba(250,246,239,0.88) 0%, rgba(250,246,239,0.6) 40%, rgba(250,246,239,0.08) 72%, rgba(250,246,239,0) 100%)",
         }}
       />
       <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 -z-[1] h-40 bg-gradient-to-b from-transparent to-paper" />
 
-      <div className="mx-auto grid w-full max-w-[1200px] items-center gap-12 px-5 pb-20 pt-32 sm:px-8 lg:grid-cols-[1fr_1fr] lg:pb-24">
+      {/* Desktop: columns size to their content and the pair is centred, so text and image sit together. */}
+      <div className="mx-auto grid w-full max-w-[1200px] items-center gap-12 px-5 pb-20 pt-32 sm:px-8 lg:grid-cols-[auto_minmax(0,30rem)] lg:justify-center lg:gap-14 lg:pb-24">
         <Reveal>
           <RevealItem>
-            <h1 className="display shine-ink text-[clamp(3.4rem,11vw,8.6rem)] font-medium leading-[0.92]">QuillStudio</h1>
+            <h1 className="display shine-ink text-[clamp(3.4rem,11vw,8.6rem)] font-medium leading-[0.92] lg:text-[clamp(4.5rem,7.5vw,7.25rem)]">QuillStudio</h1>
           </RevealItem>
           <RevealItem delay={0.08}>
             <p className="mt-6 max-w-[34ch] text-[clamp(1.15rem,2.1vw,1.45rem)] leading-[1.45] text-ink/85">
@@ -111,7 +112,7 @@ export function Hero() {
  */
 function HeroObjectSlot() {
   return (
-    <div data-slot="hero-3d" className="relative mx-auto w-full max-w-[33rem]">
+    <div data-slot="hero-3d" className="hero-float relative mx-auto w-full max-w-[33rem] lg:mx-0">
       {/* Warm glow behind the frame */}
       <div
         aria-hidden="true"

@@ -16,6 +16,13 @@ export const site = {
   // TODO: endpoint that receives the enquiry form as JSON (HubSpot, Salesforce Web-to-Lead proxy, etc).
   formEndpoint: "",
 
+  // TODO: documentation and help centre. Footer links stay hidden until these are set.
+  docsUrl: "",
+  helpUrl: "",
+
+  excellerTechUrl: "https://exceller.tech",
+  legalEntity: "Exceller Management Consultancy LLP",
+
   // TODO: legal pages.
   privacyUrl: "#",
   termsUrl: "#",
@@ -25,6 +32,7 @@ export const site = {
   logos: {
     quillstudio: "/brand/quillstudio-logo.png",
     excellerTech: "/brand/exceller-tech-logo.png",
+    salesforce: "/brand/salesforce-logo.svg",
   },
 
   company: "Exceller Tech",
@@ -36,6 +44,12 @@ export const site = {
   // TODO: how fast the team replies to an enquiry, e.g. "within one working day". Empty hides the promise.
   replyTime: "",
 
-  // TODO: indicative pricing, e.g. "From ₹X per user per month". Empty keeps the "tell us your seats" line.
-  pricingFrom: "",
+  // The plan shown in the Pricing section.
+  plan: {
+    name: "QuillStudio",
+    price: "$20",
+    unit: "/ user / month",
+    features: ["Unlimited document generation", "Salesforce native integration", "Secure & scalable"],
+    salesThreshold: "100+",
+  },
 } as const;

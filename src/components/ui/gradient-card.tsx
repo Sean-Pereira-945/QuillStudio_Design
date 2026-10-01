@@ -1,5 +1,5 @@
 import { useRef, type ReactNode } from "react";
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { motion, useMotionTemplate, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { cva, type VariantProps } from "class-variance-authority";
 import type { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -14,11 +14,11 @@ import { usePrefersReducedMotion } from "@/lib/use-media";
  *  - the stock background image slot is replaced by a large, low-opacity Lucide icon cropped at the corner
  *  - the badge shows a real category, never a marketing label
  *  - the CTA link renders only when a real `href` is supplied
- *  - tilt follows the pointer gently and is off for reduced motion
+ *  - hovering lifts and tilts the card toward the pointer, with a soft light that follows it; all off for reduced motion
  */
 
 const cardVariants = cva(
-  "group relative isolate flex h-full flex-col overflow-hidden rounded-[1.375rem] border p-5 text-ink",
+  "group relative isolate flex h-full flex-col overflow-hidden rounded-[1.375rem] border p-5 text-ink shadow-[0_1px_2px_rgba(22,32,46,0.04)] transition-shadow duration-500 hover:shadow-[0_28px_50px_-22px_rgba(22,32,46,0.32)]",
   {
     variants: {
       variant: {
@@ -47,8 +47,6 @@ export type GradientCardProps = VariantProps<typeof cardVariants> & {
   description: ReactNode;
   badge: string;
   icon: LucideIcon;
-  /** The pain point this card answers. Shown small at the top. */
-  answers?: string;
   href?: string;
   linkLabel?: string;
   className?: string;
@@ -60,7 +58,6 @@ export function GradientCard({
   description,
   badge,
   icon: Icon,
-  answers,
   href,
   linkLabel,
   variant = "neutral",
@@ -71,15 +68,24 @@ export function GradientCard({
   const reduced = usePrefersReducedMotion();
   const mx = useMotionValue(0);
   const my = useMotionValue(0);
-  const rx = useSpring(useTransform(my, [-0.5, 0.5], [3, -3]), { stiffness: 160, damping: 18 });
-  const ry = useSpring(useTransform(mx, [-0.5, 0.5], [-3, 3]), { stiffness: 160, damping: 18 });
+  const rx = useSpring(useTransform(my, [-0.5, 0.5], [8, -8]), { stiffness: 180, damping: 16 });
+  const ry = useSpring(useTransform(mx, [-0.5, 0.5], [-8, 8]), { stiffness: 180, damping: 16 });
+  // Light that follows the pointer, in percent of the card.
+  const lx = useTransform(mx, (v) => (v + 0.5) * 100);
+  const ly = useTransform(my, (v) => (v + 0.5) * 100);
+  const glow = useMotionTemplate`radial-gradient(60% 60% at ${lx}% ${ly}%, rgba(255,255,255,0.75), transparent 70%)`;
   const color = accent[variant ?? "neutral"];
 
   return (
     <motion.article
       ref={ref}
       className={cn(cardVariants({ variant }), className)}
-      style={reduced ? undefined : { rotateX: rx, rotateY: ry, transformPerspective: 900 }}
+      style={reduced ? undefined : { rotateX: rx, rotateY: ry, transformPerspective: 800 }}
+      initial={reduced ? false : { y: 28, scale: 0.97 }}
+      whileInView={reduced ? undefined : { y: 0, scale: 1 }}
+      viewport={{ once: true, margin: "0px 0px -40px 0px" }}
+      whileHover={reduced ? undefined : { y: -8, scale: 1.02 }}
+      transition={{ type: "spring", stiffness: 220, damping: 20 }}
       onPointerMove={(e) => {
         if (reduced || e.pointerType !== "mouse" || !ref.current) return;
         const r = ref.current.getBoundingClientRect();
@@ -94,9 +100,16 @@ export function GradientCard({
       <Icon
         aria-hidden="true"
         strokeWidth={1.1}
-        className="pointer-events-none absolute -bottom-8 -right-8 -z-10 h-36 w-36 opacity-[0.1] transition-transform duration-700 group-hover:scale-105"
+        className="pointer-events-none absolute -bottom-8 -right-8 -z-10 h-36 w-36 opacity-[0.1] transition-all duration-700 ease-out group-hover:-translate-x-2 group-hover:-translate-y-2 group-hover:-rotate-6 group-hover:scale-[1.2] group-hover:opacity-[0.18]"
         style={{ color }}
       />
+      {!reduced && (
+        <motion.div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 -z-[5] opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+          style={{ background: glow }}
+        />
+      )}
 
       <div className="flex items-center gap-2">
         <span className="h-2 w-2 rounded-full" style={{ background: color }} aria-hidden="true" />
@@ -109,13 +122,6 @@ export function GradientCard({
       <div className="mt-2 max-w-[46ch] text-[0.9rem] leading-snug text-slate">{description}</div>
 
       {children}
-
-      {answers && (
-        <p className="mt-auto pt-4 text-[0.8rem] leading-snug text-slate">
-          <span className="font-medium text-ink">Answers: </span>
-          {answers}
-        </p>
-      )}
 
       {href && linkLabel && (
         <a

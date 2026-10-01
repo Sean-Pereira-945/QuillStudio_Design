@@ -15,18 +15,21 @@ type SceneProps = {
   id: string;
   label: string;
   children: ReactNode;
-  tone?: "paper" | "pearl" | "mist";
+  tone?: "paper" | "cream" | "pearl" | "mist";
+  /** No section padding: for the hero, which fills the first screen itself. */
+  flush?: boolean;
   className?: string;
 };
 
-const tones = { paper: "#ffffff", pearl: "#f0eee6", mist: "#ffffff" };
+// cream alternates with paper so each section reads as its own block while scrolling.
+const tones = { paper: "#ffffff", cream: "#fbf8f3", pearl: "#f0eee6", mist: "#ffffff" };
 
-export function Scene({ id, label, children, tone = "paper", className }: SceneProps) {
+export function Scene({ id, label, children, tone = "paper", flush, className }: SceneProps) {
   return (
     <>
       <div id={id} className="scene-anchor" aria-hidden="true" />
       <section className="scene" aria-label={label} style={{ "--scene-bg": tones[tone] } as CSSProperties}>
-        <div className={cn("scene-inner", className)}>{children}</div>
+        <div className={cn("scene-inner", flush && "is-flush", className)}>{children}</div>
       </section>
     </>
   );

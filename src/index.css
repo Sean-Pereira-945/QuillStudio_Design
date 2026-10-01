@@ -32,7 +32,7 @@ html {
 }
 
 /* Desktop: every size is in rem, so scaling the root with the viewport height keeps each
-   section on one screen. 49 is the tallest section (How it works, 48rem) plus headroom.
+   section's content within one screen. 49 is the tallest section (How it works) plus headroom.
    Capped at the browser default so large screens are unchanged, and floored at 13px so text
    stays readable: below about 640px of viewport height sections grow and scroll instead. */
 @media (min-width: 1024px) {
@@ -174,19 +174,39 @@ canvas {
   background: var(--scene-bg, var(--paper));
 }
 
-/* Desktop: one section per screen, content centred vertically. */
-@media (min-width: 1024px) {
-  .scene-inner {
+/* Sections take their natural height with the same breathing room above and below, so the page
+   scrolls like a website, not a slide deck. The top padding always clears the fixed navbar, so a
+   nav link lands with the heading in view. */
+.scene-inner {
+  padding-top: clamp(6.25rem, 14vh, 9rem);
+  padding-bottom: clamp(3.5rem, 8vh, 6rem);
+}
+.scene-inner.is-flush {
+  padding: 0;
+}
+/* Where the page snaps section by section (see use-smooth-scroll), each section is at least one
+   screen tall with its content centred, so a snapped view shows exactly one section. */
+@media (min-width: 1024px) and (hover: hover) and (pointer: fine) {
+  .scene-inner:not(.is-flush) {
     display: flex;
     min-height: 100svh;
     flex-direction: column;
     justify-content: center;
   }
-  .scene-inner > * {
+  .scene-inner:not(.is-flush) > * {
     width: 100%;
   }
 }
 
+/* ---------- Hero ---------- */
+/* The illustration floats gently, like a page resting on air. */
+.hero-float {
+  animation: hero-float 7s ease-in-out infinite;
+}
+@keyframes hero-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
 /* ---------- Ink smudge under the navbar ---------- */
 .smudge {
   position: fixed;

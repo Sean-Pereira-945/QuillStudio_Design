@@ -6,7 +6,7 @@ import { usePrefersReducedMotion } from "@/lib/use-media";
  * Fade-in on scroll.
  * Each <RevealItem> watches its own position, so an item low on a long phone page fades in when it actually
  * reaches the screen, not when its group first appears. <Reveal> is a plain wrapper kept for layout.
- * Opacity-only, so it also runs for reduced motion (just quicker): no movement is involved.
+ * Items fade in and rise a little. For reduced motion they only fade, more quickly, with no movement.
  */
 
 const viewport = { once: true, amount: 0, margin: "0px 0px -40px 0px" } as const;
@@ -33,10 +33,10 @@ export function RevealItem({
   return (
     <M
       className={className}
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
+      initial={{ opacity: 0, y: reduced ? 0 : 18 }}
+      whileInView={{ opacity: 1, y: 0 }}
       viewport={viewport}
-      transition={{ duration: reduced ? 0.3 : 0.7, delay: reduced ? 0 : delay, ease: "easeOut" }}
+      transition={{ duration: reduced ? 0.3 : 0.8, delay: reduced ? 0 : delay, ease: [0.22, 1, 0.36, 1] }}
     >
       {children}
     </M>

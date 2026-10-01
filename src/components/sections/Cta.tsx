@@ -1,10 +1,13 @@
 import { useEffect, useRef, useState, type FormEvent, type RefObject } from "react";
-import { CalendarCheck, CheckCircle2, Mail, MessageSquare } from "lucide-react";
+import { CheckCircle2, ChevronDown, Mail } from "lucide-react";
 import { GlassButton } from "@/components/ui/glass-button";
 import { Reveal, RevealItem } from "@/components/ui/reveal";
 import { site } from "@/config/site";
+import { cn } from "@/lib/utils";
 
 /**
+ * Get early access: the enquiry form.
+ *
  * idle / sending: the form
  * sent:     the endpoint accepted it
  * mailto:   no endpoint, so the visitor's email app was opened with the enquiry filled in
@@ -12,14 +15,39 @@ import { site } from "@/config/site";
  * offline:  neither an endpoint nor a contact email is configured; nothing was sent, and we say so
  */
 type State = "idle" | "sending" | "sent" | "mailto" | "error" | "offline";
-type Errors = { name?: string; email?: string };
+type Errors = Partial<Record<(typeof REQUIRED)[number], string>>;
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-const LIMITS = { name: 120, email: 254, company: 160, message: 2000 };
+const LIMITS = { name: 80, email: 254, company: 160, phone: 32 };
 
-// Book a demo and Talk to us only earn a button when they lead somewhere other than the form beside them.
-const hasBookingLink = !site.bookDemoUrl.startsWith("#");
+// Checked in this order, so focus lands on the first problem in reading order.
+const REQUIRED = ["firstName", "lastName", "email", "company", "edition", "phone"] as const;
+
+const EDITIONS = ["Starter / Essentials", "Professional", "Enterprise", "Unlimited", "Unlimited+ / Performance", "Developer", "Not sure"];
+const CHALLENGES = [
+  "Documents are built by hand",
+  "Template changes wait on developers",
+  "Approvals are lost in email and chat",
+  "The wrong version reaches the client",
+  "Something else",
+];
+
+// Inputs sit on a soft warm fill with a visible edge, and take a peach focus ring that matches the send button.
+const FIELD =
+  "mt-1.5 w-full rounded-xl border border-[#c9c3b5] bg-white/80 px-3.5 text-[0.98rem] text-ink transition-[border-color,box-shadow,background-color] duration-200 placeholder:text-slate hover:border-[#a39c8d] focus:border-[#c46a2e] focus:bg-white focus:shadow-[0_0_0_4px_rgba(249,194,156,0.45)] focus:outline-none aria-[invalid]:border-rose";
+
 const hasPrivacy = site.privacyUrl !== "#";
+
+function validate(d: Record<string, string>): Errors {
+  const e: Errors = {};
+  if (!d.firstName?.trim()) e.firstName = "Enter your first name.";
+  if (!d.lastName?.trim()) e.lastName = "Enter your last name.";
+  if (!EMAIL.test((d.email ?? "").trim())) e.email = "Enter a work email, for example name@company.com.";
+  if (!d.company?.trim()) e.company = "Enter your company.";
+  if (!d.edition) e.edition = "Choose your Salesforce edition.";
+  if ((d.phone ?? "").replace(/\D/g, "").length < 7) e.phone = "Enter a phone number, including the country code.";
+  return e;
+}
 
 export function Cta() {
   const [state, setState] = useState<State>("idle");
@@ -36,24 +64,29 @@ export function Cta() {
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const data = Object.fromEntries(new FormData(e.currentTarget)) as Record<string, string>;
-    const next: Errors = {};
-    if (!data.name?.trim()) next.name = "Enter your name.";
-    if (!EMAIL.test((data.email ?? "").trim())) next.email = "Enter a work email, for example name@company.com.";
+    const next = validate(data);
     setErrors(next);
-    const firstInvalid = next.name ? "name" : next.email ? "email" : null;
+    const firstInvalid = REQUIRED.find((k) => next[k]);
     if (firstInvalid) {
-      formRef.current?.querySelector<HTMLInputElement>(`[name="${firstInvalid}"]`)?.focus();
+      formRef.current?.querySelector<HTMLElement>(`[name="${firstInvalid}"]`)?.focus();
       return;
     }
 
-    setName(data.name.trim().split(/\s+/)[0].slice(0, 40));
+    setName(data.firstName.trim().slice(0, 40));
 
     if (!site.formEndpoint) {
       if (site.contactEmail) {
-        const body = [`Name: ${data.name}`, `Email: ${data.email}`, data.company && `Company: ${data.company}`, data.message && `\n${data.message}`]
+        const body = [
+          `Name: ${data.firstName} ${data.lastName}`,
+          `Email: ${data.email}`,
+          `Company: ${data.company}`,
+          `Salesforce edition: ${data.edition}`,
+          data.challenge && `Biggest challenge: ${data.challenge}`,
+          `Phone: ${data.phone}`,
+        ]
           .filter(Boolean)
           .join("\n");
-        window.location.href = `mailto:${site.contactEmail}?subject=${encodeURIComponent("QuillStudio demo enquiry")}&body=${encodeURIComponent(body)}`;
+        window.location.href = `mailto:${site.contactEmail}?subject=${encodeURIComponent("QuillStudio early access enquiry")}&body=${encodeURIComponent(body)}`;
         setState("mailto");
       } else {
         // Launch blocker: set site.formEndpoint or site.contactEmail.
@@ -77,48 +110,26 @@ export function Cta() {
   }
 
   return (
-    <div className="mx-auto max-w-[1200px] px-5 pb-12 pt-24 sm:px-8 lg:pb-6 lg:pt-[5.5rem]">
-      <div className="grid gap-10 lg:grid-cols-[1fr_0.95fr] lg:gap-16">
+    <div className="mx-auto max-w-[1200px] px-5 sm:px-8">
+      {/* Desktop: columns size to their content and the pair is centred, so the text sits close to the form. */}
+      <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,26rem)_minmax(0,36rem)] lg:justify-center lg:gap-12">
         <Reveal>
           <RevealItem>
-            <h2 className="display shine-rose text-[clamp(2.4rem,5vw,4rem)] font-medium leading-[0.98]">
-              See it on your own documents.
+            <p className="data-label text-rose">Get early access</p>
+          </RevealItem>
+          <RevealItem delay={0.06}>
+            <h2 className="display shine-rose mt-3 text-[clamp(2.2rem,4.4vw,3.6rem)] font-medium leading-[1]">
+              Ready to automate your document workflow?
             </h2>
           </RevealItem>
-          <RevealItem delay={0.08}>
-            <p className="mt-4 max-w-[46ch] text-[1.04rem] leading-relaxed text-slate">
-              Bring a real template, a cost sheet or a booking form, and we will walk through it with you on Salesforce.
+          <RevealItem delay={0.12}>
+            <p className="mt-4 max-w-[42ch] text-[1.04rem] leading-relaxed text-slate">
+              Leave your details and our team will reach out to set up a personalised demo.
             </p>
           </RevealItem>
 
-          {(hasBookingLink || site.contactEmail) && (
-            <RevealItem delay={0.12}>
-              <div className="mt-7 flex flex-wrap items-center gap-3">
-                {hasBookingLink && (
-                  <GlassButton
-                    label="Book a demo"
-                    size="lg"
-                    variant="warm"
-                    href={site.bookDemoUrl}
-                    icon={<CalendarCheck className="h-4 w-4" aria-hidden="true" />}
-                  />
-                )}
-                {site.contactEmail && (
-                  <a
-                    href={`mailto:${site.contactEmail}`}
-                    data-magnetic
-                    className="inline-flex items-center gap-2 rounded-full px-3 py-2 text-[0.98rem] font-medium text-ink underline decoration-ink/30 underline-offset-4 hover:decoration-ink"
-                  >
-                    <MessageSquare className="h-4 w-4" aria-hidden="true" />
-                    {site.contactEmail}
-                  </a>
-                )}
-              </div>
-            </RevealItem>
-          )}
-
-          <RevealItem delay={0.16}>
-            <div className="mt-7 max-w-[46ch]">
+          <RevealItem delay={0.18}>
+            <div className="mt-7 max-w-[42ch]">
               <h3 className="text-[1rem] font-semibold">What happens next</h3>
               <ol className="mt-3 space-y-2.5 text-[0.98rem] leading-snug text-slate">
                 {[
@@ -136,44 +147,24 @@ export function Cta() {
               </ol>
             </div>
           </RevealItem>
-
-          <RevealItem delay={0.24}>
-            <div className="mt-7 max-w-[46ch] border-t border-line pt-5">
-              <h3 className="text-[1rem] font-semibold">Pricing</h3>
-              <p className="mt-2 text-[0.98rem] leading-relaxed text-slate">
-                {site.pricingFrom ? `${site.pricingFrom}. ` : ""}
-                Licensing is seat-based and managed from an admin console. Tell us how many people will generate or approve
-                documents and we will share the details.
-              </p>
-            </div>
-          </RevealItem>
         </Reveal>
 
         <RevealItem delay={0.12}>
-        <div id="enquiry" className="scroll-mt-28 rounded-[1.75rem] border border-line bg-white p-6 shadow-[0_30px_80px_-50px_rgba(22,32,46,0.45)] sm:p-8">
+        {/* No card: the fields sit straight on the page, sized to match the text beside them. */}
+        <div id="enquiry" className="scroll-mt-28">
           {state === "sent" || state === "mailto" || state === "offline" ? (
             <Outcome state={state} name={name} headingRef={resultRef} onReset={() => setState("idle")} />
           ) : (
-            <form ref={formRef} noValidate onSubmit={onSubmit} aria-describedby="form-note">
-              <h3 className="text-[1.2rem] font-semibold">Send an enquiry</h3>
-              <p id="form-note" className="mt-1 text-[0.9rem] text-slate">Only your name and work email are required.</p>
-
-              <div className="mt-5 space-y-3.5">
-                <Field label="Name" name="name" autoComplete="name" maxLength={LIMITS.name} required error={errors.name} />
-                <Field label="Work email" name="email" type="email" autoComplete="email" maxLength={LIMITS.email} required error={errors.email} />
-                <Field label="Company" name="company" autoComplete="organization" maxLength={LIMITS.company} optional />
-                <div>
-                  <label htmlFor="f-message" className="flex justify-between text-[0.9rem] font-medium">
-                    What would you like to see? <span className="font-normal text-slate">Optional</span>
-                  </label>
-                  <textarea
-                    id="f-message"
-                    name="message"
-                    rows={3}
-                    maxLength={LIMITS.message}
-                    placeholder="For example: our booking form and allotment letter"
-                    className="mt-1.5 w-full resize-y rounded-xl border border-line bg-paper px-3.5 py-2.5 text-[0.98rem] placeholder:text-slate focus:border-rose/50 focus:outline-none focus-visible:outline-2 focus-visible:outline-rose"
-                  />
+            <form ref={formRef} noValidate onSubmit={onSubmit} aria-label="Early access enquiry">
+              <div className="grid gap-x-4 gap-y-3 sm:grid-cols-2">
+                <Field label="First name" name="firstName" autoComplete="given-name" placeholder="John" maxLength={LIMITS.name} error={errors.firstName} />
+                <Field label="Last name" name="lastName" autoComplete="family-name" placeholder="Smith" maxLength={LIMITS.name} error={errors.lastName} />
+                <Field label="Work email" name="email" type="email" autoComplete="email" placeholder="john@company.com" maxLength={LIMITS.email} error={errors.email} />
+                <Field label="Company" name="company" autoComplete="organization" placeholder="Acme Corp" maxLength={LIMITS.company} error={errors.company} />
+                <Select label="Salesforce edition" name="edition" placeholder="Select your edition" options={EDITIONS} error={errors.edition} />
+                <Select label="Biggest challenge" name="challenge" placeholder="Select your challenge" options={CHALLENGES} optional />
+                <div className="sm:col-span-2">
+                  <Field label="Phone" name="phone" type="tel" autoComplete="tel" placeholder="+1 (555) 000-0000" maxLength={LIMITS.phone} error={errors.phone} />
                 </div>
               </div>
 
@@ -184,7 +175,7 @@ export function Cta() {
                 </p>
               )}
 
-              <div className="mt-6">
+              <div className="mt-5">
                 <GlassButton
                   label={state === "sending" ? "Sending…" : "Send enquiry"}
                   type="submit"
@@ -254,13 +245,39 @@ function Outcome({
   );
 }
 
+function Label({ id, label, optional }: { id: string; label: string; optional?: boolean }) {
+  return (
+    <label htmlFor={id} className="flex justify-between text-[0.9rem] font-medium">
+      <span>
+        {label}
+        {!optional && (
+          <span className="text-rose" aria-hidden="true">
+            {" "}
+            *
+          </span>
+        )}
+      </span>
+      {optional && <span className="font-normal text-slate">Optional</span>}
+    </label>
+  );
+}
+
+function ErrorText({ id, error }: { id: string; error?: string }) {
+  if (!error) return null;
+  return (
+    <p id={`${id}-err`} className="mt-1.5 text-[0.85rem] text-rose-deep">
+      {error}
+    </p>
+  );
+}
+
 function Field({
   label,
   name,
   type = "text",
   autoComplete,
+  placeholder,
   maxLength,
-  required,
   optional,
   error,
 }: {
@@ -268,34 +285,75 @@ function Field({
   name: string;
   type?: string;
   autoComplete?: string;
+  placeholder?: string;
   maxLength?: number;
-  required?: boolean;
   optional?: boolean;
   error?: string;
 }) {
   const id = `f-${name}`;
   return (
     <div>
-      <label htmlFor={id} className="flex justify-between text-[0.9rem] font-medium">
-        {label}
-        {optional && <span className="font-normal text-slate">Optional</span>}
-      </label>
+      <Label id={id} label={label} optional={optional} />
       <input
         id={id}
         name={name}
         type={type}
         autoComplete={autoComplete}
+        placeholder={placeholder}
         maxLength={maxLength}
-        required={required}
+        required={!optional}
         aria-invalid={error ? true : undefined}
         aria-describedby={error ? `${id}-err` : undefined}
-        className="mt-1.5 h-12 w-full rounded-xl border border-line bg-paper px-3.5 text-[0.98rem] focus:border-rose/50 focus:outline-none focus-visible:outline-2 focus-visible:outline-rose aria-[invalid]:border-rose"
+        className={`${FIELD} h-11`}
       />
-      {error && (
-        <p id={`${id}-err`} className="mt-1.5 text-[0.85rem] text-rose-deep">
-          {error}
-        </p>
-      )}
+      <ErrorText id={id} error={error} />
+    </div>
+  );
+}
+
+function Select({
+  label,
+  name,
+  placeholder,
+  options,
+  optional,
+  error,
+}: {
+  label: string;
+  name: string;
+  placeholder: string;
+  options: string[];
+  optional?: boolean;
+  error?: string;
+}) {
+  const id = `f-${name}`;
+  const [empty, setEmpty] = useState(true);
+  return (
+    <div>
+      <Label id={id} label={label} optional={optional} />
+      <div className="relative">
+        <select
+          id={id}
+          name={name}
+          defaultValue=""
+          required={!optional}
+          onChange={(e) => setEmpty(e.target.value === "")}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={error ? `${id}-err` : undefined}
+          className={cn(FIELD, "h-11 cursor-pointer appearance-none pr-10", empty && "text-slate")}
+        >
+          <option value="" disabled>
+            {placeholder}
+          </option>
+          {options.map((o) => (
+            <option key={o} value={o} className="text-ink">
+              {o}
+            </option>
+          ))}
+        </select>
+        <ChevronDown className="pointer-events-none absolute right-3.5 top-1/2 mt-[0.1875rem] h-4 w-4 -translate-y-1/2 text-slate" aria-hidden="true" />
+      </div>
+      <ErrorText id={id} error={error} />
     </div>
   );
 }
