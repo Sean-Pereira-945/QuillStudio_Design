@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState, type FormEvent, type RefObject } from "react";
-import { CheckCircle2, ChevronDown, Mail } from "lucide-react";
+import { useEffect, useId, useRef, useState, type FormEvent, type KeyboardEvent, type RefObject } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Check, CheckCircle2, ChevronDown, Mail } from "lucide-react";
 import { GlassButton } from "@/components/ui/glass-button";
 import { Reveal, RevealItem } from "@/components/ui/reveal";
 import { site } from "@/config/site";
@@ -73,7 +74,7 @@ export function Cta() {
     setErrors(next);
     const firstInvalid = REQUIRED.find((k) => next[k]);
     if (firstInvalid) {
-      formRef.current?.querySelector<HTMLElement>(`[name="${firstInvalid}"]`)?.focus();
+      formRef.current?.querySelector<HTMLElement>(`#f-${firstInvalid}`)?.focus();
       return;
     }
 
@@ -316,6 +317,12 @@ function Field({
   );
 }
 
+/**
+ * A select-only combobox styled to match the form. The browser draws a native <select> list itself,
+ * and most browsers will not let it be restyled. The value travels in a hidden input, so the form
+ * submits it like any other field. Keyboard: arrows, Home, End, Enter or Space, Escape, Tab, and
+ * typing a letter jumps to the next option starting with it.
+ */
 function Select({
   label,
   name,
@@ -332,31 +339,140 @@ function Select({
   error?: string;
 }) {
   const id = `f-${name}`;
-  const [empty, setEmpty] = useState(true);
+  const listId = `${id}-list`;
+  const uid = useId();
+  const [value, setValue] = useState("");
+  const [open, setOpen] = useState(false);
+  const [active, setActive] = useState(0);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLUListElement>(null);
+  const selected = options.find((o) => o.value === value);
+
+  // Close when a click lands anywhere outside.
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (e: PointerEvent) => {
+      if (!rootRef.current?.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("pointerdown", onDown);
+    return () => document.removeEventListener("pointerdown", onDown);
+  }, [open]);
+
+  // Keep the highlighted option in view while moving through a long list.
+  useEffect(() => {
+    if (open) listRef.current?.children[active]?.scrollIntoView({ block: "nearest" });
+  }, [open, active]);
+
+  function show() {
+    setActive(Math.max(0, options.findIndex((o) => o.value === value)));
+    setOpen(true);
+  }
+
+  function choose(i: number) {
+    setValue(options[i].value);
+    setOpen(false);
+  }
+
+  function onKeyDown(e: KeyboardEvent<HTMLButtonElement>) {
+    const last = options.length - 1;
+    const keys: Record<string, () => void> = {
+      ArrowDown: () => (open ? setActive((a) => Math.min(last, a + 1)) : show()),
+      ArrowUp: () => (open ? setActive((a) => Math.max(0, a - 1)) : show()),
+      Home: () => open && setActive(0),
+      End: () => open && setActive(last),
+      Enter: () => (open ? choose(active) : show()),
+      " ": () => (open ? choose(active) : show()),
+      Escape: () => setOpen(false),
+    };
+    if (keys[e.key]) {
+      if (e.key !== "Escape" || open) e.preventDefault();
+      keys[e.key]();
+      return;
+    }
+    if (e.key === "Tab") {
+      setOpen(false);
+      return;
+    }
+    // Type-ahead: jump to the next option that starts with the typed letter.
+    if (e.key.length === 1 && /S/.test(e.key)) {
+      const from = open ? active : options.findIndex((o) => o.value === value);
+      const n = options.length;
+      for (let step = 1; step <= n; step++) {
+        const i = (from + step + n) % n;
+        if (options[i].label.toLowerCase().startsWith(e.key.toLowerCase())) {
+          if (open) setActive(i);
+          else setValue(options[i].value);
+          break;
+        }
+      }
+    }
+  }
+
   return (
-    <div>
+    <div ref={rootRef}>
       <Label id={id} label={label} optional={optional} />
+      <input type="hidden" name={name} value={value} />
       <div className="relative">
-        <select
-          id={id}
-          name={name}
-          defaultValue=""
-          required={!optional}
-          onChange={(e) => setEmpty(e.target.value === "")}
-          aria-invalid={error ? true : undefined}
-          aria-describedby={error ? `${id}-err` : undefined}
-          className={cn(FIELD, "h-11 cursor-pointer appearance-none pr-10", empty && "text-slate")}
-        >
-          <option value="" disabled>
-            {placeholder}
-          </option>
-          {options.map((o) => (
-            <option key={o.value} value={o.value} className="text-ink">
-              {o.label}
-            </option>
-          ))}
-        </select>
-        <ChevronDown className="pointer-events-none absolute right-3.5 top-1/2 mt-[0.1875rem] h-4 w-4 -translate-y-1/2 text-slate" aria-hidden="true" />
+      <button
+        id={id}
+        type="button"
+        role="combobox"
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        aria-controls={listId}
+        aria-activedescendant={open ? `${uid}-${active}` : undefined}
+        aria-required={optional ? undefined : true}
+        aria-invalid={error ? true : undefined}
+        aria-describedby={error ? `${id}-err` : undefined}
+        onClick={() => (open ? setOpen(false) : show())}
+        onKeyDown={onKeyDown}
+        className={cn(FIELD, "flex h-11 cursor-pointer items-center pr-10 text-left", !selected && "text-slate", open && "border-[#c46a2e] bg-white shadow-[0_0_0_4px_rgba(249,194,156,0.45)]")}
+      >
+        <span className="truncate">{selected ? selected.label : placeholder}</span>
+      </button>
+      <ChevronDown
+        className={cn("pointer-events-none absolute right-3.5 top-1/2 mt-[0.1875rem] h-4 w-4 -translate-y-1/2 text-slate transition-transform duration-200", open && "-translate-y-1/2 rotate-180")}
+        aria-hidden="true"
+      />
+
+      <AnimatePresence>
+        {open && (
+          <motion.ul
+            ref={listRef}
+            id={listId}
+            role="listbox"
+            aria-labelledby={id}
+            initial={{ opacity: 0, y: -4, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -4, scale: 0.98 }}
+            transition={{ duration: 0.14, ease: "easeOut" }}
+            className="absolute inset-x-0 top-full z-30 mt-1.5 max-h-64 origin-top overflow-auto rounded-xl border border-[#efe2d6] bg-white p-1.5 shadow-[0_1px_2px_rgba(22,32,46,0.06),0_18px_40px_-16px_rgba(160,90,40,0.35)]"
+          >
+            {options.map((o, i) => {
+              const isSelected = o.value === value;
+              return (
+                <li
+                  key={o.value}
+                  id={`${uid}-${i}`}
+                  role="option"
+                  aria-selected={isSelected}
+                  onPointerEnter={() => setActive(i)}
+                  onPointerDown={(e) => e.preventDefault()} // keep focus on the trigger
+                  onClick={() => choose(i)}
+                  className={cn(
+                    "flex cursor-pointer items-center justify-between gap-3 rounded-lg px-3 py-2 text-[0.95rem] leading-snug text-ink",
+                    i === active && "bg-[#fdf1e7]",
+                    isSelected && "font-medium",
+                  )}
+                >
+                  <span>{o.label}</span>
+                  {isSelected && <Check className="h-4 w-4 shrink-0 text-[#b76d10]" strokeWidth={2.5} aria-hidden="true" />}
+                </li>
+              );
+            })}
+          </motion.ul>
+        )}
+      </AnimatePresence>
       </div>
       <ErrorText id={id} error={error} />
     </div>
