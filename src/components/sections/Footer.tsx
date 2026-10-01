@@ -1,5 +1,6 @@
 import { BrandPill } from "@/components/layout/Logo";
 import { site } from "@/config/site";
+import { RevealItem } from "@/components/ui/reveal";
 
 type FooterLink = { label: string; href: string; external?: boolean };
 
@@ -34,12 +35,13 @@ export function Footer() {
   return (
     <footer className="relative border-t border-line bg-pearl">
       <div className="mx-auto grid max-w-[1200px] gap-10 px-5 py-14 sm:px-8 md:grid-cols-[1.3fr_2fr]">
-        <div>
+        <RevealItem>
           <BrandPill />
           <p className="mt-5 max-w-[38ch] text-[0.95rem] leading-relaxed text-slate">
             Salesforce-native document generation and governance for real estate developers.
           </p>
-        </div>
+        </RevealItem>
+        <RevealItem delay={0.08}>
         <nav aria-label="Footer" className="grid grid-cols-2 gap-8 sm:grid-cols-3">
           {columns.map((c) => (
             <div key={c.title}>
@@ -60,13 +62,14 @@ export function Footer() {
             </div>
           ))}
         </nav>
+        </RevealItem>
       </div>
-      <div className="border-t border-line">
+      <RevealItem delay={0.12} className="border-t border-line">
         <div className="mx-auto flex max-w-[1200px] flex-wrap justify-between gap-2 px-5 py-5 text-[0.85rem] text-slate sm:px-8">
           <span>© {new Date().getFullYear()} {site.company}. All rights reserved.</span>
           <span>QuillStudio is a product of {site.company}.</span>
         </div>
-      </div>
+      </RevealItem>
     </footer>
   );
 }

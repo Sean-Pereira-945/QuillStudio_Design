@@ -242,7 +242,7 @@ canvas {
 
 /* ---------- Liquid glass navbar ---------- */
 .glass {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.6));
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.93), rgba(255, 255, 255, 0.86));
   backdrop-filter: blur(18px) saturate(1.6);
   -webkit-backdrop-filter: blur(18px) saturate(1.6);
   border: 1px solid rgba(255, 255, 255, 0.95);
@@ -254,7 +254,7 @@ canvas {
 }
 /* Off the top of the page the bar firms up so it reads over any section. */
 .glass.is-scrolled {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(255, 255, 255, 0.84));
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0.95));
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 1),
     inset 0 -1px 0 rgba(22, 32, 46, 0.05),
@@ -268,9 +268,9 @@ canvas {
 }
 
 /* Dropdown sits inside the blurred nav, where a nested backdrop blur can't reach the page,
-   so it relies on a near-opaque fill to keep the options readable. */
+   so it uses a solid fill to keep the options readable. */
 .glass-menu {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.97), rgba(250, 248, 245, 0.94));
+  background: linear-gradient(180deg, #ffffff, #faf8f5);
   backdrop-filter: blur(40px) saturate(1.8);
   -webkit-backdrop-filter: blur(40px) saturate(1.8);
 }

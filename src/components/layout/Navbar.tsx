@@ -59,7 +59,7 @@ export function Navbar() {
       <nav
         aria-label="Main"
         className={cn(
-          "glass relative flex min-w-0 w-full max-w-[1232px] items-center gap-1 rounded-full py-1.5 pl-3 pr-1 transition-[background,box-shadow] duration-300 sm:gap-2 sm:py-2 sm:pl-5 sm:pr-2",
+          "glass relative flex min-w-0 w-full max-w-[1232px] items-center gap-1 rounded-2xl py-1.5 pl-3 pr-1 transition-[background,box-shadow] duration-300 sm:gap-2 sm:py-2 sm:pl-5 sm:pr-2",
           scrolled && "is-scrolled",
         )}
       >
@@ -75,7 +75,7 @@ export function Navbar() {
                 data-magnetic
                 aria-current={active === l.href.slice(1) ? "true" : undefined}
                 className={cn(
-                  "inline-block rounded-full px-3.5 py-2 text-[0.93rem] text-slate transition-colors hover:text-ink",
+                  "inline-block rounded-lg px-3.5 py-2 text-[0.93rem] text-slate transition-colors hover:text-ink",
                   active === l.href.slice(1) && "bg-ink/[0.06] text-ink",
                 )}
               >
@@ -89,7 +89,7 @@ export function Navbar() {
 
         <button
           type="button"
-          className="ml-1 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-ink lg:hidden sm:h-11 sm:w-11"
+          className="ml-1 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-ink lg:hidden sm:h-11 sm:w-11"
           aria-expanded={open}
           aria-controls="mobile-menu"
           aria-label={open ? "Close menu" : "Open menu"}
@@ -99,13 +99,13 @@ export function Navbar() {
         </button>
 
         {open && (
-          <ul id="mobile-menu" className="glass glass-menu absolute inset-x-0 top-[calc(100%+8px)] flex flex-col rounded-3xl p-2 lg:hidden">
+          <ul id="mobile-menu" className="glass glass-menu absolute inset-x-0 top-[calc(100%+8px)] flex flex-col rounded-2xl p-2 lg:hidden">
             {links.map((l) => (
               <li key={l.href}>
                 <a
                   href={l.href}
                   onClick={() => setOpen(false)}
-                  className="block rounded-2xl px-4 py-3 text-[1rem] text-ink hover:bg-ink/[0.05]"
+                  className="block rounded-xl px-4 py-3 text-[1rem] text-ink hover:bg-ink/[0.05]"
                 >
                   {l.label}
                 </a>

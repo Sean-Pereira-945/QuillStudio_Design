@@ -8,8 +8,11 @@ import { Demo } from "@/components/sections/Demo";
 import { Capabilities } from "@/components/sections/Capabilities";
 import { Cta } from "@/components/sections/Cta";
 import { Footer } from "@/components/sections/Footer";
+import { useSmoothScroll } from "@/lib/use-smooth-scroll";
 
 export default function App() {
+  useSmoothScroll();
+
   return (
     <MagneticCursor magneticFactor={0.35} cursorSize={30}>
       <a href="#main" className="skip-link">Skip to content</a>

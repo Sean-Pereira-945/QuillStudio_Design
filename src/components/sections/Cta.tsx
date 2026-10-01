@@ -149,6 +149,7 @@ export function Cta() {
           </RevealItem>
         </Reveal>
 
+        <RevealItem delay={0.12}>
         <div id="enquiry" className="scroll-mt-28 rounded-[1.75rem] border border-line bg-white p-6 shadow-[0_30px_80px_-50px_rgba(22,32,46,0.45)] sm:p-8">
           {state === "sent" || state === "mailto" || state === "offline" ? (
             <Outcome state={state} name={name} headingRef={resultRef} onReset={() => setState("idle")} />
@@ -206,6 +207,7 @@ export function Cta() {
             </form>
           )}
         </div>
+        </RevealItem>
       </div>
     </div>
   );
