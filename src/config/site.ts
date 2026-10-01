@@ -13,8 +13,10 @@ export const site = {
   // TODO: real contact email. Until set, "Talk to us" scrolls to the enquiry form.
   contactEmail: "",
 
-  // TODO: endpoint that receives the enquiry form as JSON (HubSpot, Salesforce Web-to-Lead proxy, etc).
-  formEndpoint: "",
+  // The enquiry form posts JSON here. It is the same lead API quillstudio.tech uses: vercel.json (and the
+  // dev server in vite.config.ts) forward /api/leads to https://www.quillstudio.tech/api/leads, because that
+  // API does not accept cross-origin requests from the browser.
+  formEndpoint: "/api/leads",
 
   // TODO: documentation and help centre. Footer links stay hidden until these are set.
   docsUrl: "",

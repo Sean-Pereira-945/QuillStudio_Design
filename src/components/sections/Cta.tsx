@@ -20,16 +20,21 @@ type Errors = Partial<Record<(typeof REQUIRED)[number], string>>;
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const LIMITS = { name: 80, email: 254, company: 160, phone: 32 };
 
+// Field names and option values match the lead API behind quillstudio.tech (POST /api/leads).
 // Checked in this order, so focus lands on the first problem in reading order.
-const REQUIRED = ["firstName", "lastName", "email", "company", "edition", "phone"] as const;
+const REQUIRED = ["first_name", "last_name", "email", "company", "salesforce_edition", "phone"] as const;
 
-const EDITIONS = ["Starter / Essentials", "Professional", "Enterprise", "Unlimited", "Unlimited+ / Performance", "Developer", "Not sure"];
+type Option = { value: string; label: string };
+const opt = (value: string, label = value): Option => ({ value, label });
+
+const EDITIONS = ["Essentials", "Professional", "Enterprise", "Unlimited", "Developer", "Not using Salesforce yet"].map((v) => opt(v));
 const CHALLENGES = [
-  "Documents are built by hand",
-  "Template changes wait on developers",
-  "Approvals are lost in email and chat",
-  "The wrong version reaches the client",
-  "Something else",
+  opt("Manual document creation", "Creating documents manually is time-consuming"),
+  opt("Copy-paste errors", "Too many errors from copy-pasting Salesforce data"),
+  opt("No PDF from Salesforce", "Can’t generate PDFs directly from Salesforce"),
+  opt("Inconsistent branding", "Documents lack consistent formatting & branding"),
+  opt("Slow approval cycles", "Slow document approval & sending cycles"),
+  opt("Other"),
 ];
 
 // Inputs sit on a soft warm fill with a visible edge, and take a peach focus ring that matches the send button.
@@ -40,11 +45,11 @@ const hasPrivacy = site.privacyUrl !== "#";
 
 function validate(d: Record<string, string>): Errors {
   const e: Errors = {};
-  if (!d.firstName?.trim()) e.firstName = "Enter your first name.";
-  if (!d.lastName?.trim()) e.lastName = "Enter your last name.";
+  if (!d.first_name?.trim()) e.first_name = "Enter your first name.";
+  if (!d.last_name?.trim()) e.last_name = "Enter your last name.";
   if (!EMAIL.test((d.email ?? "").trim())) e.email = "Enter a work email, for example name@company.com.";
   if (!d.company?.trim()) e.company = "Enter your company.";
-  if (!d.edition) e.edition = "Choose your Salesforce edition.";
+  if (!d.salesforce_edition) e.salesforce_edition = "Choose your Salesforce edition.";
   if ((d.phone ?? "").replace(/\D/g, "").length < 7) e.phone = "Enter a phone number, including the country code.";
   return e;
 }
@@ -72,16 +77,16 @@ export function Cta() {
       return;
     }
 
-    setName(data.firstName.trim().slice(0, 40));
+    setName(data.first_name.trim().slice(0, 40));
 
     if (!site.formEndpoint) {
       if (site.contactEmail) {
         const body = [
-          `Name: ${data.firstName} ${data.lastName}`,
+          `Name: ${data.first_name} ${data.last_name}`,
           `Email: ${data.email}`,
           `Company: ${data.company}`,
-          `Salesforce edition: ${data.edition}`,
-          data.challenge && `Biggest challenge: ${data.challenge}`,
+          `Salesforce edition: ${data.salesforce_edition}`,
+          data.biggest_challenge && `Biggest challenge: ${data.biggest_challenge}`,
           `Phone: ${data.phone}`,
         ]
           .filter(Boolean)
@@ -157,12 +162,12 @@ export function Cta() {
           ) : (
             <form ref={formRef} noValidate onSubmit={onSubmit} aria-label="Early access enquiry">
               <div className="grid gap-x-4 gap-y-3 sm:grid-cols-2">
-                <Field label="First name" name="firstName" autoComplete="given-name" placeholder="John" maxLength={LIMITS.name} error={errors.firstName} />
-                <Field label="Last name" name="lastName" autoComplete="family-name" placeholder="Smith" maxLength={LIMITS.name} error={errors.lastName} />
+                <Field label="First name" name="first_name" autoComplete="given-name" placeholder="John" maxLength={LIMITS.name} error={errors.first_name} />
+                <Field label="Last name" name="last_name" autoComplete="family-name" placeholder="Smith" maxLength={LIMITS.name} error={errors.last_name} />
                 <Field label="Work email" name="email" type="email" autoComplete="email" placeholder="john@company.com" maxLength={LIMITS.email} error={errors.email} />
                 <Field label="Company" name="company" autoComplete="organization" placeholder="Acme Corp" maxLength={LIMITS.company} error={errors.company} />
-                <Select label="Salesforce edition" name="edition" placeholder="Select your edition" options={EDITIONS} error={errors.edition} />
-                <Select label="Biggest challenge" name="challenge" placeholder="Select your challenge" options={CHALLENGES} optional />
+                <Select label="Salesforce edition" name="salesforce_edition" placeholder="Select your edition" options={EDITIONS} error={errors.salesforce_edition} />
+                <Select label="Biggest challenge" name="biggest_challenge" placeholder="Select your challenge" options={CHALLENGES} optional />
                 <div className="sm:col-span-2">
                   <Field label="Phone" name="phone" type="tel" autoComplete="tel" placeholder="+1 (555) 000-0000" maxLength={LIMITS.phone} error={errors.phone} />
                 </div>
@@ -322,7 +327,7 @@ function Select({
   label: string;
   name: string;
   placeholder: string;
-  options: string[];
+  options: Option[];
   optional?: boolean;
   error?: string;
 }) {
@@ -346,8 +351,8 @@ function Select({
             {placeholder}
           </option>
           {options.map((o) => (
-            <option key={o} value={o} className="text-ink">
-              {o}
+            <option key={o.value} value={o.value} className="text-ink">
+              {o.label}
             </option>
           ))}
         </select>

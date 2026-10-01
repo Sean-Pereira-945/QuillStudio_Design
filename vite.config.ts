@@ -9,4 +9,7 @@ export default defineConfig(({ mode }) => ({
   plugins: [react(), ...(mode === "single" ? [viteSingleFile()] : [])],
   resolve: { alias: { "@": path.resolve(__dirname, "./src") } },
   build: mode === "single" ? { outDir: "dist-single", assetsInlineLimit: 100_000_000 } : {},
+  // The enquiry form posts to /api/leads; forward it to the live lead API, as vercel.json does in production.
+  server: { proxy: { "/api/leads": { target: "https://www.quillstudio.tech", changeOrigin: true } } },
+  preview: { proxy: { "/api/leads": { target: "https://www.quillstudio.tech", changeOrigin: true } } },
 }));
