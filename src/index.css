@@ -244,7 +244,7 @@ canvas {
   -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 42%);
 }
 .smudge .tint {
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0) 72%);
+  background: linear-gradient(to bottom, rgba(250, 246, 239, 0.7), rgba(250, 246, 239, 0) 72%);
 }
 
 /* Touch devices and small screens: stacked live blurs make scrolling stutter, so keep one light blur and the tint. */
@@ -260,39 +260,36 @@ canvas {
   }
 }
 
-/* ---------- Liquid glass navbar ---------- */
+/* ---------- Navbar: warm frosted paper ---------- */
+/* Same off-white as the hero, see-through enough to feel light, with a peach-beige edge and a warm shadow. */
 .glass {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.93), rgba(255, 255, 255, 0.86));
-  backdrop-filter: blur(18px) saturate(1.6);
-  -webkit-backdrop-filter: blur(18px) saturate(1.6);
-  border: 1px solid rgba(255, 255, 255, 0.95);
+  background: linear-gradient(180deg, rgba(252, 249, 244, 0.78), rgba(250, 246, 239, 0.7));
+  backdrop-filter: blur(18px) saturate(1.4);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  border: 1px solid rgba(232, 214, 198, 0.75);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 1),
-    inset 0 -1px 0 rgba(22, 32, 46, 0.05),
-    0 0 0 1px rgba(22, 32, 46, 0.05),
-    0 12px 32px -12px rgba(22, 32, 46, 0.25);
+    inset 0 1px 0 rgba(255, 255, 255, 0.85),
+    0 1px 2px rgba(120, 70, 30, 0.05),
+    0 14px 34px -20px rgba(160, 90, 40, 0.38);
 }
 /* Off the top of the page the bar firms up so it reads over any section. */
 .glass.is-scrolled {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0.95));
+  background: linear-gradient(180deg, rgba(252, 249, 244, 0.94), rgba(250, 246, 239, 0.9));
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 1),
-    inset 0 -1px 0 rgba(22, 32, 46, 0.05),
-    0 0 0 1px rgba(22, 32, 46, 0.07),
-    0 16px 40px -14px rgba(22, 32, 46, 0.32);
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 1px 2px rgba(120, 70, 30, 0.06),
+    0 18px 40px -20px rgba(160, 90, 40, 0.42);
 }
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   .glass {
-    background: rgba(255, 255, 255, 0.97);
+    background: #faf6ef;
   }
 }
 
-/* Dropdown sits inside the blurred nav, where a nested backdrop blur can't reach the page,
-   so it uses a solid fill to keep the options readable. */
+/* The phone menu sits inside the blurred nav, where a nested backdrop blur can't reach the page,
+   so it uses a solid warm fill to keep the options readable. */
 .glass-menu {
-  background: linear-gradient(180deg, #ffffff, #faf8f5);
-  backdrop-filter: blur(40px) saturate(1.8);
-  -webkit-backdrop-filter: blur(40px) saturate(1.8);
+  background: linear-gradient(180deg, #fffcf8, #faf6ef);
 }
 
 /* ---------- Glass button (after @jahed's Glass Button on 21st.dev) ---------- */
